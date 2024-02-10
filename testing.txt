@@ -1,0 +1,27 @@
+Test 1
+	Results
+		Flagged as malicious by email, browser, and OS:
+			“Aqua Icons Redux.saver” can’t be opened
+			because Apple cannot check it for malicious software.
+			This software needs to be updated. Contact the developer for more information.
+			(Chrome downloaded this file today at 7:43 PM.)
+		Privacy settings, Run Anyway + "Open" allowed it to run
+		Are settings persisted?
+			For next test, set all defaults to the extremes
+Test 2
+	Changes
+		all defaults are at minimum value
+	Results
+		Dev build persists settings
+		On dad's computer, after installing and clicking the options button, screensaver preview crashes and config window doesn't appear
+Test 3
+	Changes
+		all defaults are at maximum value
+	Results
+		The screensaver settings are persisting, but the config window isn't properly initialized on first presentation
+Test 4
+	Changes
+		notarized
+		Various commits
+	Results
+		The screensaver installed, was not scary, but did not initialize

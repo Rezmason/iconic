@@ -1,0 +1,29 @@
+{
+  "aequa":
+  {
+    "assetName": "aequa",
+    "iconSize": 128,
+    "pixelated": false,
+    "name": "Aequa Icons",
+    "description": "A fair-use sample of icons that shipped with the first release of Mac OS X in 2001. Watch your screen come alive with liquid color, translucence, depth and fluid motion.",
+    "symbol": "drop"
+  },
+  "fruits-of-eden":
+  {
+    "assetName": "eden-light",
+    "iconSize": 200,
+    "pixelated": false,
+    "name": "Fruits of Eden",
+    "description": "Reproductions of the icons that once decorated the lawn of Apple HQ.",
+    "symbol": "camera.macro"
+  },
+  "wabi-sabi":
+  {
+    "assetName": "wabi-sabi",
+    "iconSize": 32,
+    "pixelated": true,
+    "name": "Wabi-Sabi",
+    "description": "Icons from the last known secret about box Apple ever shipped.",
+    "symbol": "person.3"
+  }
+}

@@ -1,0 +1,68 @@
+aqua effect?
+	https://developer.apple.com/documentation/spritekit/skwarpgeometrygrid/animate_the_warping_of_a_sprite
+	https://mattreagandev.com/?page=blog&sort=recent&count=1
+Notarization
+
+----------------
+
+Code review?
+	Generic bag
+	autoreleasepool and memory usage
+		Look at it in Instruments
+
+v1.1
+	Move more data to JSON?
+	Kare Package - icons from the earliest system, maybe Cairo font
+	Debug mode: annotate icons
+		origin ID
+		icon source ID
+	Aqua style UI
+	Blur with fade?
+	Icons for packaged atlases
+		"Cheetah" (OS X): aqua folder with X on it (System?)
+		NextStep: brown folder, maybe with NeXT logo on it
+		"Sonata" (OS 9): platinum folder with 9 on it
+		Copland (OS 8)
+		System 7 (SevenDust?)
+		etc
+	Is there occasional Z-fighting?
+		Speed up time to investigate
+	App icons can be filtered/sorted by last opened date
+	Folders as icon sources
+		Plus button lets you choose a folder
+			You can also drop a folder in
+		Minus button lets you remove a selected folder
+			Disabled if no folder is selected
+	Affiliate icon source?
+	Investigate SceneKit instead of SpriteKit
+
+Other icon source concepts
+	Limiting icons-in-directory to com.apple.application
+	Resource forks
+	IconFactory
+			https://freeware.iconfactory.com/icons
+			http://web.archive.org/web/20060701064119/http://www.iconfactory.com/ic_home.asp
+			Icon sets
+			iControl packs
+			Candybar packs
+	zip
+	sit
+	SF Symbols
+
+Future atlas / category ideas
+	Xerox Star
+		https://github.com/livingcomputermuseum/Darkstar#331-getting-software-and-documentation
+	Lisa?
+		Not with CHM's source code
+	Cairo font glyphs (96 of them)
+		Susan Kare and Haley Fiege
+	Cairo color font glyphs
+		Start with Kid Pix stamps
+		Work out the rest with Kid Pix palette, or Apple system color palette
+	Mac OS
+		Every monochrome 32x32
+		icns8
+		icns9
+		icnsX
+		icnsXL
+		iChat icons
