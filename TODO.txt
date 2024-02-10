@@ -1,7 +1,9 @@
 aqua effect?
 	https://developer.apple.com/documentation/spritekit/skwarpgeometrygrid/animate_the_warping_of_a_sprite
 	https://mattreagandev.com/?page=blog&sort=recent&count=1
+README.md
 Notarization
+Website? Readme rtf?
 
 ----------------
 
