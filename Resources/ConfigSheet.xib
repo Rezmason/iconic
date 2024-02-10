@@ -305,9 +305,9 @@ Gw
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" heightSizable="YES"/>
                                             <clipView key="contentView" drawsBackground="NO" id="tIb-1s-KOW">
                                                 <rect key="frame" x="0.0" y="0.0" width="251" height="198"/>
-                                                <autoresizingMask key="autoresizingMask"/>
+                                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                 <subviews>
-                                                    <textView editable="NO" selectable="NO" importsGraphics="NO" verticallyResizable="YES" spellingCorrection="YES" smartInsertDelete="YES" id="kfQ-OG-KjX">
+                                                    <textView editable="NO" importsGraphics="NO" verticallyResizable="YES" spellingCorrection="YES" smartInsertDelete="YES" id="kfQ-OG-KjX">
                                                         <rect key="frame" x="0.0" y="0.0" width="251" height="198"/>
                                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                         <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
@@ -636,7 +636,7 @@ Eric Peyton • Eric Kidd • Christopher Lane</string>
                                                         <autoresizingMask key="autoresizingMask" flexibleMinX="YES" heightSizable="YES"/>
                                                         <clipView key="contentView" drawsBackground="NO" id="LFC-l9-Ke1">
                                                             <rect key="frame" x="0.0" y="0.0" width="344" height="395"/>
-                                                            <autoresizingMask key="autoresizingMask"/>
+                                                            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                             <subviews>
                                                                 <textView editable="NO" selectable="NO" importsGraphics="NO" verticallyResizable="YES" spellingCorrection="YES" smartInsertDelete="YES" id="hhf-k5-iar">
                                                                     <rect key="frame" x="0.0" y="-10" width="344" height="909"/>
