@@ -1,9 +1,17 @@
-aqua effect?
-	https://developer.apple.com/documentation/spritekit/skwarpgeometrygrid/animate_the_warping_of_a_sprite
-	https://mattreagandev.com/?page=blog&sort=recent&count=1
+scale check
+	track actual footage
 README.md
+	Download link
+	What it is
+		Screenshots
+	System requirements
+	---
+	Maybe an essay
+
 Notarization
 Website? Readme rtf?
+DMG release
+	https://zgcoder.net/ramblings/modern-dmgs/
 
 ----------------
 
@@ -14,6 +22,7 @@ Code review?
 
 v1.1
 	Move more data to JSON?
+		codable enums into JSON
 	Kare Package - icons from the earliest system, maybe Cairo font
 	Debug mode: annotate icons
 		origin ID

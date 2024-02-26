@@ -109,7 +109,7 @@ class Settings {
     settings.count.value = 0.5
     settings.lifespan.value = 0.4
     settings.scale.value = 0.6
-    settings.aqua.value = 0.3
+    settings.aqua.value = 0.0
     settings.sources.insert(sourceRunningAppsKey)
   }
 
