@@ -1,6 +1,5 @@
-scale check
-	track actual footage
 README.md
+	Remake GIF
 	Download link
 	What it is
 		Screenshots
@@ -12,6 +11,7 @@ Notarization
 Website? Readme rtf?
 DMG release
 	https://zgcoder.net/ramblings/modern-dmgs/
+https://github.com/agarrharr/awesome-macos-screensavers
 
 ----------------
 
@@ -21,6 +21,8 @@ Code review?
 		Look at it in Instruments
 
 v1.1
+	thereCanBeOnlyOne
+		original screensaver prevents an icon from appearing multiple times at once
 	Move more data to JSON?
 		codable enums into JSON
 	Kare Package - icons from the earliest system, maybe Cairo font

@@ -29,8 +29,9 @@ class PlaceholderIconSource: IconSource {
   init(for rect: CGRect) {
     let width = rect.width
     let shape = SKShapeNode(rect: rect, cornerRadius: width / 8)
+
     shape.strokeColor = SKColor.systemBlue
-    shape.lineWidth = Double.maximum(width / 24, 24)
+    shape.lineWidth = Double.maximum(width / 24, 16)
     let texture = SKView().texture(from: shape)!
     texture.usesMipmaps = true
     image = NSImage(cgImage: texture.cgImage(), size: rect.size)
@@ -44,10 +45,13 @@ class PlaceholderIconSource: IconSource {
 class AnimationContext {
   let maxIcons = 30
   let iconRect: CGRect
-  let quadrantSize: vector_float2
-  let aspectRatio: vector_float2
-  let otherFlips: [vector_float2]
-  let flips: [vector_float2]
+
+  let backScale: Double = 8
+  let backRange: (x: ClosedRange<Double>, y: ClosedRange<Double>)
+  let frontRange: (x: ClosedRange<Double>, y: ClosedRange<Double>)
+  let focalLength: Double
+  let backZ: Double
+  let frontZ: Double
 
   var count = 0
   var lifespan = 0.0
@@ -58,19 +62,30 @@ class AnimationContext {
   let warp: SKWarpGeometryGrid
 
   init(for frame: NSRect) {
-    let width = min(1024, max(32, pow(2, ceil(log2(max(frame.width, frame.height))) - 2)))
+
+    let largestFrameDimension = Double(max(frame.width, frame.height))
+    focalLength = largestFrameDimension
+    frontZ = largestFrameDimension
+    backZ = frontZ * backScale
+
+    let width = Double(frame.width)
+    let height = Double(frame.height)
+    frontRange = (x: 0...width, y: 0...height)
+    backRange = (x: 0...(backScale * width), y: 0...(backScale * height))
+
+    let idealIconWidth = largestFrameDimension / 6.25
+    let minIconWidth = 32.0
+    let maxIconWidth = 1024.0
+    let iconWidth = min(
+      maxIconWidth,
+      max(
+        minIconWidth,
+        pow(2, ceil(log2(idealIconWidth)))
+      ))
     iconRect = CGRect(
-      origin: CGPoint(x: -width / 2, y: -width / 2),
-      size: CGSize(width: width, height: width)
+      origin: CGPoint(x: -iconWidth / 2, y: -iconWidth / 2),
+      size: CGSize(width: iconWidth, height: iconWidth)
     )
-    quadrantSize = vector_float2(Float(frame.width), Float(frame.height)) / 2
-    aspectRatio = quadrantSize / quadrantSize.x
-    otherFlips = [
-      vector_float2(1, -1),
-      vector_float2(-1, 1),
-      vector_float2(-1, -1),
-    ]
-    flips = otherFlips + [vector_float2(1, 1)]
 
     let numWarpRows = 10
     let fraction = 1.0 / Float(numWarpRows)
@@ -84,19 +99,6 @@ class AnimationContext {
     warp = SKWarpGeometryGrid(columns: numWarpRows, rows: numWarpRows)
       .replacingBySourcePositions(positions: warpPoints)
       .replacingByDestinationPositions(positions: warpPoints)
-  }
-
-  func createMotion() -> (CGPoint, CGVector) {
-    let flip = flips.randomElement()!
-    let otherFlip = otherFlips.randomElement()!
-    let startPosition = quadrantSize * (randomPoint() * flip + 1)
-    let finalPosition = quadrantSize * (randomPoint() * flip * otherFlip * 0.75 + 1)
-    let velocity = finalPosition - startPosition
-
-    return (
-      CGPoint(x: Double(startPosition.x), y: Double(startPosition.y)),
-      CGVector(dx: Double(velocity.x), dy: Double(velocity.y))
-    )
   }
 }
 
@@ -155,18 +157,44 @@ class Card: SKEffectNode {
 
   func runAnimation() async {
     let duration = Double.random(in: (context.lifespan / 2)...context.lifespan)
-    let (position, velocity) = context.createMotion()
 
     removeAllActions()
     alpha = 0
-    self.position = position
 
-    let approach = SKAction.customAction(withDuration: duration) { _, elapsedTime in
-      self.zPosition = elapsedTime
-      let depth = duration - elapsedTime
-      let scale = self.context.scale / (1 + depth * 0.1)
+    let initialPosition = vector_double3(
+      .random(in: context.backRange.x),
+      .random(in: context.backRange.y),
+      context.backZ
+    )
+
+    let finalPosition = vector_double3(
+      .random(in: context.frontRange.x),
+      .random(in: context.frontRange.y),
+      context.frontZ
+    )
+
+    let three = vector_double3(1, 1, 1)
+    self.position = CGPoint(x: initialPosition.x, y: initialPosition.y)
+    sprite.zRotation = 0
+    let isTwirling = Float.random(in: 0..<100) < 0.3
+    let rotationSpeed = (Bool.random() ? 1.0 : -1.0) * 4
+    shape.isHidden = !isTwirling
+
+    let move = SKAction.customAction(withDuration: duration) { _, elapsedTime in
+      let worldPosition = simd_mix(initialPosition, finalPosition, three * elapsedTime / duration)
+      let perspectiveScale = self.context.focalLength / worldPosition.z
+      self.zPosition = -worldPosition.z
+      self.position = CGPoint(
+        x: worldPosition.x * perspectiveScale,
+        y: worldPosition.y * perspectiveScale
+      )
+      let scale = self.context.scale * perspectiveScale
       self.sprite.setScale(scale)
       self.shape.setScale(scale)
+
+      if isTwirling {
+        self.sprite.zRotation = rotationSpeed * elapsedTime
+      }
     }
 
     let ripple = SKAction.customAction(withDuration: duration) { _, elapsedTime in
@@ -191,24 +219,7 @@ class Card: SKEffectNode {
       SKAction.fadeOut(withDuration: duration * 0.2),
     ])
 
-    let move = SKAction.move(by: velocity, duration: duration)
-    move.timingMode = .easeIn
-
-    var actions = [approach, ripple, fade, move]
-
-    sprite.zRotation = 0
-    let isTwirling = Int.random(in: 0..<100) == 0
-    shape.isHidden = !isTwirling
-    if isTwirling {
-      sprite.zRotation = Double.random(in: 0...(.pi * 2))
-      let rotationSpeed = Double.random(in: 3...5) * (Bool.random() ? 1.0 : -1.0)
-      let twirl = SKAction.customAction(withDuration: duration) { _, elapsedTime in
-        self.sprite.zRotation = rotationSpeed * elapsedTime
-      }
-      actions.append(twirl)
-    }
-
-    await self.run(SKAction.group(actions))
+    await self.run(SKAction.group([move, ripple, fade]))
   }
 }
 
@@ -258,7 +269,7 @@ class AnimationView: SKView {
     }
 
     settings.lifespan += { self.context.lifespan = mix(15, 5, $0) }
-    settings.scale += { self.context.scale = mix(0.15, 0.4, $0) }
+    settings.scale += { self.context.scale = mix(0.5, 2.0, $0) }
     settings.aqua += { self.context.aqua = mix(0.0, 0.1, $0) }
   }
 
