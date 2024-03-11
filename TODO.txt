@@ -1,4 +1,11 @@
+thereCanBeOnlyOne
+	original screensaver prevents an icon from appearing multiple times at once
 Code review?
+	Dispatch/task/async-await/actor stuff
+	Memory stuff
+		NSCache
+v1.1
+
 README.md
 	Download link
 	What it is
@@ -9,9 +16,7 @@ self hosted page
 
 ----------------
 
-v1.1
-	thereCanBeOnlyOne
-		original screensaver prevents an icon from appearing multiple times at once
+v1.2
 	Move more data to JSON?
 		codable enums into JSON
 	Kare Package - icons from the earliest system, maybe Cairo font
@@ -27,8 +32,6 @@ v1.1
 		Copland (OS 8)
 		System 7 (SevenDust?)
 		etc
-	Is there occasional Z-fighting?
-		Speed up time to investigate
 	App icons can be filtered/sorted by last opened date
 	Folders as icon sources
 		Plus button lets you choose a folder
@@ -36,7 +39,6 @@ v1.1
 		Minus button lets you remove a selected folder
 			Disabled if no folder is selected
 	Affiliate icon source?
-	Investigate SceneKit instead of SpriteKit
 
 Other icon source concepts
 	Limiting icons-in-directory to com.apple.application

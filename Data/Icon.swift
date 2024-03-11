@@ -8,7 +8,7 @@
 
 import Cocoa
 
-struct Icon {
+class Icon: NSObject {
   let image: NSImage
   let pixelated: Bool
 

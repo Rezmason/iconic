@@ -25,6 +25,9 @@ class DeepIconSource: IconSource {
     self.minEntropy = minEntropy
 
     storage = IconStorage(with: { file in
+
+      // Late validation of width, size and entropy— memory/time tradeoff
+
       guard
         let image = NSImage(contentsOfFile: file),
         image.size.width >= minWidth
