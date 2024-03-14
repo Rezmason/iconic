@@ -14,26 +14,6 @@ private enum SpotlightIcon: Hashable {
   case bundle(atPath: String)
 }
 
-private func getArch() -> String? {
-  #if arch(arm64e)
-    return "arm64e"
-  #elseif arch(arm64)
-    return "arm64"
-  #elseif arch(armv7)
-    return "armv7"
-  #elseif arch(i386)
-    return "i386"
-  #elseif arch(ppc)
-    return "ppc"
-  #elseif arch(x86_64)
-    return "x86_64"
-  #else
-    return nil
-  #endif
-}
-
-private let arch = getArch()
-
 private func contentTypeFormat(_ contentTypes: [String]) -> String {
   return
     contentTypes
@@ -45,6 +25,7 @@ private func getIcon(forBundle bundlePath: String) -> SpotlightIcon? {
   let bundleURL = URL(fileURLWithPath: bundlePath)
   let isDirectory = try? bundleURL.resourceValues(forKeys: [.isDirectoryKey]).isDirectory
   if isDirectory ?? false {
+
     let contentsURL = bundleURL.appendingPathComponent("Contents")
 
     guard
@@ -88,15 +69,19 @@ private func getICNS(fromResourceFork path: String) -> NSImage? {
     return nil
   }
 
+  let icnsMagic = "icns".data(using: .macOSRoman)!
   var searchRange = 0..<data.count
-  var count = 0
-  while let firstRange = data.range(
-    of: "icns".data(using: .macOSRoman)!, options: [], in: searchRange)
-  {
-    // TODO: convert to NSImage
-    print(path, count, firstRange.first!, firstRange.last!)
-    count += 1
-    searchRange = firstRange.last!..<data.count
+  while let magicRange = data.range(of: icnsMagic, options: [], in: searchRange) {
+    let sizeStart = magicRange.endIndex
+    let size = data.subdata(in: sizeStart..<(sizeStart + 4)).reduce(0) { $0 << 8 + $1 }
+    let endIndex = magicRange.startIndex + Int(size)
+    let icnsFile = data.subdata(in: magicRange.startIndex..<endIndex)
+
+    if let image = NSImage(data: icnsFile) {
+      return image
+    }
+
+    searchRange = magicRange.endIndex..<data.count
   }
 
   return nil
@@ -113,8 +98,6 @@ class SpotlightIconSource: IconSource {
     domainMask: FileManager.SearchPathDomainMask,
     predicate: NSPredicate
   ) {
-    query = NSMetadataQuery()
-
     storage = IconStorage(with: { spotlightIcon in
       var image: NSImage?
       switch spotlightIcon {
@@ -130,38 +113,26 @@ class SpotlightIconSource: IconSource {
         }
       }
       guard let image = image else { return nil }
-      return Icon(image: image)
+      return Icon(image: image, pixelated: image.size.width < 128)
     })
 
-    let query = self.query
-    query.searchScopes = paths.compactMap({ path in
-      FileManager.default.urls(for: path, in: domainMask)
-    })
-
+    let query = NSMetadataQuery()
+    self.query = query
+    query.searchScopes = paths.compactMap({ FileManager.default.urls(for: $0, in: domainMask) })
     query.predicate = predicate
 
-    let notifications = NotificationCenter.default
-
-    let useFallback = false
-
-    token = notifications.addObserver(
+    token = NotificationCenter.default.addObserver(
       forName: .NSMetadataQueryDidFinishGathering,
       object: query,
       queue: nil
     ) { _ in
 
-      notifications.removeObserver(self.token!)
+      NotificationCenter.default.removeObserver(self.token!)
       self.token = nil
       query.disableUpdates()
       let metadataItems = query.results.compactMap { $0 as? NSMetadataItem }
 
-      Task.detached {
-        if !useFallback {
-          await self.addIconsFromFiles(in: metadataItems)
-        } else if arch != nil {
-          await self.addIconsFromSupportedBundles(in: metadataItems)
-        }
-      }
+      Task.detached { await self.addIconsFromFiles(in: metadataItems) }
 
       query.stop()
     }
@@ -191,18 +162,6 @@ class SpotlightIconSource: IconSource {
         await self.storage.add(.file(atPath: itemPath))
       } else if let iconPath = getIcon(forBundle: itemPath) {
         await self.storage.add(iconPath)
-      }
-    }
-  }
-
-  func addIconsFromSupportedBundles(in items: [NSMetadataItem]) async {
-    for item in items {
-      guard let itemPath = item.value(forAttribute: "kMDItemPath") as? String else {
-        continue
-      }
-      let architectures = item.value(forAttribute: "kMDItemExecutableArchitectures") as? [String?]
-      if architectures?.contains(arch) ?? false {
-        await self.storage.add(.bundle(atPath: itemPath))
       }
     }
   }
