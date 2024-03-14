@@ -83,7 +83,6 @@ final class ConfigWindowController: NSWindowController {
     }
   }
 
-  var importedSources = [String]()
   var sourceSidebarElements = [SidebarElement]()
 
   override var windowNibName: String {
@@ -118,25 +117,33 @@ final class ConfigWindowController: NSWindowController {
   }
 
   private func buildIconSourceSidebarElements() {
-    importedSources = []  // TODO: support user-imported sources
 
-    let importedSourceSidebar: [SidebarElement] = [
+    let includedSpritesheetSidebar: [SidebarElement] = [
       .group(
-        name: "Custom",
-        contents: importedSources.map({ importID in
-          .entry(
-            sourceID: importID,
-            name: importID,
-            description: "",
-            symbol: "folder"
+        name: "Reliquary",
+        contents: includedSpritesheets.compactMap({ (key, def) in
+          return .entry(
+            sourceID: key,
+            display: def.display
           )
+        }).sorted(by: { entry1, entry2 in
+          guard
+            case let .entry(_, display1) = entry1,
+            case let .entry(_, display2) = entry2
+          else {
+            return false
+          }
+          return display1.name < display2.name
         })
       )
     ]
 
+    let importedSourceSidebar: [SidebarElement] = []  // TODO
+
     sourceSidebarElements =
       ([
-        defaultSidebar,
+        builtInSidebar,
+        includedSpritesheetSidebar,
         importedSourceSidebar,
       ].flatMap({ $0 }).compactMap({ element in
         switch element {
@@ -148,17 +155,6 @@ final class ConfigWindowController: NSWindowController {
           return []
         }
       }) as [[SidebarElement]]).flatMap({ $0 })
-      .filter({ element in
-        switch element {
-        case .group:
-          return true
-        case .entry(_, _, _, _, let requirement):
-          if let requirement = requirement {
-            return requirement()
-          }
-          return true
-        }
-      })
   }
 
   private func buildIconSourceSidebar() {
@@ -293,15 +289,15 @@ extension ConfigWindowController: NSTableViewDelegate {
         textField.sizeToFit()
       }
       return groupView
-    case let .entry(_, name, _, symbol, _):
+    case let .entry(_, display):
       let entryView =
         tableView.makeView(withIdentifier: .entryView, owner: nil) as? NSTableCellView
       if let textField = entryView?.textField {
-        textField.stringValue = name
+        textField.stringValue = display.name
         textField.sizeToFit()
       }
       if #available(macOS 11.0, *), let imageView = entryView?.imageView {
-        imageView.image = NSImage(systemSymbolName: symbol, accessibilityDescription: nil)
+        imageView.image = NSImage(systemSymbolName: display.symbol, accessibilityDescription: nil)
       }
       return entryView
     }
@@ -317,13 +313,13 @@ extension ConfigWindowController: NSTableViewDelegate {
 
   func tableViewSelectionDidChange(_ notification: Notification) {
     let selectedElement = sourceSidebarElements[sourceSidebar.selectedRow]
-    guard case let .entry(sourceID, _, description, _, _) = selectedElement else {
+    guard case let .entry(sourceID, display) = selectedElement else {
       return
     }
 
     selectedSourceID = sourceID
     sourceToggle.state = settings.sources.contains(sourceID) ? .on : .off
-    sourceDescription.stringValue = description
+    sourceDescription.stringValue = display.description
 
     Task.detached {
       await self.populateIcons()

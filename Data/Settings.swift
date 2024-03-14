@@ -33,7 +33,7 @@ class Settings: NSObject, Codable {
   @objc dynamic var ripple = 0.0
   @objc dynamic var sources: Set<String> = []
 
-  static let defaults = Settings(sources: [sourceRunningAppsKey])
+  static let defaults = Settings(sources: [BuiltInSourceKey.runningApps.rawValue])
 
   private init(sources: Set<String>) {
     super.init()

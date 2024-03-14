@@ -10,21 +10,32 @@ import Cocoa
 
 class SpritesheetIconSource: IconSource {
 
+  static let bundle = Bundle(for: SpritesheetIconSource.self)
+
+  struct Definition: Codable {
+    let assetName: String
+    let iconSize: UInt
+    let pixelated: Bool
+    let display: IconSourceDisplay
+  }
+
   private let storage: IconStorage<UInt>
 
-  init(from spritesheetData: [String: Any]) {
+  init(from definition: Definition) {
 
     guard
-      let assetName = spritesheetData["assetName"] as? String,
-      let iconWidth = spritesheetData["iconSize"] as? UInt,
-      let image = bundle.image(forResource: NSImage.Name(assetName))
+      let image = SpritesheetIconSource.bundle.image(
+        forResource: NSImage.Name(definition.assetName))
     else {
       storage = IconStorage(with: { _ in return nil })
       return
     }
 
-    let pixelated = spritesheetData["pixelated"] as? Bool ?? false
-    let spritesheet = IconSpritesheet(image: image, iconWidth: iconWidth, pixelated: pixelated)
+    let spritesheet = IconSpritesheet(
+      image: image,
+      iconWidth: definition.iconSize,
+      pixelated: definition.pixelated
+    )
     storage = IconStorage(with: { return spritesheet.icon(at: $0) })
     Task.detached { await self.storage.add(contentsOf: 0..<spritesheet.count) }
   }
@@ -32,4 +43,15 @@ class SpritesheetIconSource: IconSource {
   func icon() async -> Icon? {
     return await storage.icon()
   }
+
+  static func loadIncluded() -> [String: Definition] {
+    guard
+      let data = NSDataAsset(name: "included_spritesheets", bundle: bundle)?.data,
+      let json = try? JSONDecoder().decode([String: Definition].self, from: data)
+    else {
+      return [:]
+    }
+    return json
+  }
+
 }
