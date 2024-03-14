@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		3C23977A2BA26102002861ED /* IconImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C2397792BA26102002861ED /* IconImageView.swift */; };
 		3C2BFD8B2245331E00B82AC7 /* ConfigWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C2BFD8A2245331E00B82AC7 /* ConfigWindow.swift */; };
 		3C45DE402B563EA600186F67 /* IconSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C45DE3F2B563EA600186F67 /* IconSource.swift */; };
 		3C45DE422B5A12BE00186F67 /* RunningAppsIconSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C45DE412B5A12BE00186F67 /* RunningAppsIconSource.swift */; };
@@ -32,6 +33,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		3C2397792BA26102002861ED /* IconImageView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IconImageView.swift; sourceTree = "<group>"; };
 		3C2BFD8A2245331E00B82AC7 /* ConfigWindow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfigWindow.swift; sourceTree = "<group>"; };
 		3C45DE3F2B563EA600186F67 /* IconSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IconSource.swift; sourceTree = "<group>"; };
 		3C45DE412B5A12BE00186F67 /* RunningAppsIconSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RunningAppsIconSource.swift; sourceTree = "<group>"; };
@@ -122,6 +124,7 @@
 				3C6440372B9D91470094ED6D /* AnimationContext.swift */,
 				3C2BFD8A2245331E00B82AC7 /* ConfigWindow.swift */,
 				3CAECA082B74A15F004E7C70 /* Sidebar.swift */,
+				3C2397792BA26102002861ED /* IconImageView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -234,6 +237,7 @@
 				3CAECA0B2B74A3A3004E7C70 /* Bag.swift in Sources */,
 				3C45DE4A2B5AE64800186F67 /* FileTypeIconSource.swift in Sources */,
 				3CAEC9E02B6A43F3004E7C70 /* CompoundIconSource.swift in Sources */,
+				3C23977A2BA26102002861ED /* IconImageView.swift in Sources */,
 				3CAECA092B74A15F004E7C70 /* Sidebar.swift in Sources */,
 				3CAECA0D2B75258E004E7C70 /* Icon.swift in Sources */,
 				3C6440362B9D91200094ED6D /* PlaceholderIconSource.swift in Sources */,

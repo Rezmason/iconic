@@ -36,11 +36,11 @@ final class ConfigWindowController: NSWindowController {
   private class IconViewItem: NSCollectionViewItem {
 
     var spinner: NSProgressIndicator?
-    var source: IconSource?
+    var iconView: IconImageView?
 
-    var icon: NSImage? {
+    var icon: Icon? {
       didSet {
-        imageView?.image = icon
+        iconView?.icon = icon
         if icon == nil {
           spinner?.startAnimation(nil)
         } else {
@@ -50,14 +50,12 @@ final class ConfigWindowController: NSWindowController {
     }
 
     override func loadView() {
-      let imageView = NSImageView(frame: iconViewRect)
-      imageView.imageAlignment = .alignCenter
-      imageView.imageScaling = .scaleProportionallyUpOrDown
-      imageView.autoresizingMask = [.width, .height]
-      imageView.image = icon
-      self.imageView = imageView
+      let iconImageView = self.iconView ?? IconImageView(frame: iconViewRect)
+      iconImageView.autoresizingMask = [.width, .height]
+      iconImageView.icon = icon
+      self.iconView = iconImageView
 
-      let spinner = NSProgressIndicator(frame: iconViewRect.insetBy(dx: 16, dy: 16))
+      let spinner = self.spinner ?? NSProgressIndicator(frame: iconViewRect.insetBy(dx: 16, dy: 16))
       spinner.style = .spinning
       if #available(macOS 11.0, *) {
         spinner.controlSize = .large
@@ -74,15 +72,14 @@ final class ConfigWindowController: NSWindowController {
       }
 
       let view = NSView(frame: iconViewRect)
-      view.addSubview(imageView)
+      view.addSubview(iconImageView)
       view.addSubview(spinner)
       view.autoresizesSubviews = true
       self.view = view
     }
 
     deinit {
-      self.source = nil
-      self.imageView?.image = nil
+      self.iconView?.icon = nil
     }
   }
 
@@ -345,10 +342,7 @@ extension ConfigWindowController: NSTableViewDelegate {
 
     // Not parallel, but neither are icon sources I believe
     for iconView in iconViews {
-      if let icon = await source?.icon() {
-        iconView.icon = icon.image
-        // TODO: icon.pixelated
-      }
+      iconView.icon = await source?.icon()
     }
   }
 }
