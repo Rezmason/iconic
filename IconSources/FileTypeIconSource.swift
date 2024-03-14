@@ -9,152 +9,35 @@
 import Cocoa
 import UniformTypeIdentifiers
 
-@available(macOS 11, *)
 class FileTypeIconSource: IconSource {
 
-  private let storage: IconStorage<UTType>
+  static let bundle = Bundle(for: FileTypeIconSource.self)
+
+  private let storage: IconStorage<String>
 
   init() {
-    storage = IconStorage(with: { return Icon(image: NSWorkspace.shared.icon(for: $0)) })
-    Task.detached { await self.storage.add(contentsOf: utTypes) }
+    storage = IconStorage(with: {
+      if #available(macOS 11, *) {
+        guard let uttype = UTType.init($0) else { return nil }
+        return Icon(image: NSWorkspace.shared.icon(for: uttype))
+      } else {
+        return Icon(image: NSWorkspace.shared.icon(forFileType: $0))
+      }
+    })
+    Task.detached { await self.storage.add(contentsOf: FileTypeIconSource.loadContentTypes()) }
   }
 
   func icon() async -> Icon? {
     return await storage.icon()
   }
-}
 
-@available(macOS 11, *)
-private let utTypes: [UTType] = [
-  .item,
-  .content,
-  .compositeContent,
-  .diskImage,
-  .data,
-  .directory,
-  .resolvable,
-  .symbolicLink,
-  .executable,
-  .mountPoint,
-  .aliasFile,
-  .urlBookmarkData,
-  .url,
-  .fileURL,
-  .text,
-  .plainText,
-  .utf8PlainText,
-  .utf16ExternalPlainText,
-  .utf16PlainText,
-  .delimitedText,
-  .commaSeparatedText,
-  .tabSeparatedText,
-  .utf8TabSeparatedText,
-  .rtf,
-  .html,
-  .xml,
-  .yaml,
-  .sourceCode,
-  .assemblyLanguageSource,
-  .cSource,
-  .objectiveCSource,
-  .swiftSource,
-  .cPlusPlusSource,
-  .objectiveCPlusPlusSource,
-  .cHeader,
-  .cPlusPlusHeader,
-  .script,
-  .appleScript,
-  .osaScript,
-  .osaScriptBundle,
-  .javaScript,
-  .shellScript,
-  .perlScript,
-  .pythonScript,
-  .rubyScript,
-  .phpScript,
-  //  .makefile,
-  .json,
-  .propertyList,
-  .xmlPropertyList,
-  .binaryPropertyList,
-  .pdf,
-  .rtfd,
-  .flatRTFD,
-  .webArchive,
-  .image,
-  .jpeg,
-  .tiff,
-  .gif,
-  .png,
-  .icns,
-  .bmp,
-  .ico,
-  .rawImage,
-  .svg,
-  .livePhoto,
-  .heif,
-  .heic,
-  .webP,
-  .threeDContent,
-  .usd,
-  .usdz,
-  .realityFile,
-  .sceneKitScene,
-  .arReferenceObject,
-  .audiovisualContent,
-  .movie,
-  .video,
-  .audio,
-  .quickTimeMovie,
-  .mpeg,
-  .mpeg2Video,
-  .mpeg2TransportStream,
-  .mp3,
-  .mpeg4Movie,
-  .mpeg4Audio,
-  .appleProtectedMPEG4Audio,
-  .appleProtectedMPEG4Video,
-  .avi,
-  .aiff,
-  .wav,
-  .midi,
-  .playlist,
-  .m3uPlaylist,
-  .folder,
-  .volume,
-  .package,
-  .bundle,
-  .pluginBundle,
-  .spotlightImporter,
-  .quickLookGenerator,
-  .xpcService,
-  .framework,
-  .application,
-  .applicationBundle,
-  .applicationExtension,
-  .unixExecutable,
-  .exe,
-  .systemPreferencesPane,
-  .archive,
-  .gzip,
-  .bz2,
-  .zip,
-  .appleArchive,
-  .spreadsheet,
-  .presentation,
-  .database,
-  .message,
-  .contact,
-  .vCard,
-  .toDoItem,
-  .calendarEvent,
-  .emailMessage,
-  .internetLocation,
-  .internetShortcut,
-  .font,
-  .bookmark,
-  .pkcs12,
-  .x509Certificate,
-  .epub,
-  .log,
-]
+  private static func loadContentTypes() -> [String] {
+    guard
+      let data = NSDataAsset(name: "file_types", bundle: bundle)?.data,
+      let json = try? JSONDecoder().decode([String].self, from: data)
+    else {
+      return []
+    }
+    return json
+  }
+}
