@@ -7,7 +7,6 @@
 //
 
 import ScreenSaver
-import SpriteKit
 
 final class ConfigWindowController: NSWindowController {
 
@@ -19,7 +18,6 @@ final class ConfigWindowController: NSWindowController {
   private var animation: AnimationView?
   private var source: IconSource?
 
-  private static let iconViewRect = NSRect(x: 0, y: 0, width: 128, height: 128)
   private let iconViews = Array(0..<60).map { _ in IconViewItem() }
 
   @IBOutlet weak var animCountSlider: NSSlider!
@@ -33,61 +31,9 @@ final class ConfigWindowController: NSWindowController {
   @IBOutlet weak var sourceDescription: NSTextField!
   @IBOutlet weak var sourceIconCollection: NSCollectionView!
 
-  private class IconViewItem: NSCollectionViewItem {
-
-    var spinner: NSProgressIndicator?
-    var iconView: IconImageView?
-
-    var icon: Icon? {
-      didSet {
-        iconView?.icon = icon
-        if icon == nil {
-          spinner?.startAnimation(nil)
-        } else {
-          spinner?.stopAnimation(nil)
-        }
-      }
-    }
-
-    override func loadView() {
-      let iconImageView = self.iconView ?? IconImageView(frame: iconViewRect)
-      iconImageView.autoresizingMask = [.width, .height]
-      iconImageView.icon = icon
-      self.iconView = iconImageView
-
-      let spinner = self.spinner ?? NSProgressIndicator(frame: iconViewRect.insetBy(dx: 16, dy: 16))
-      spinner.style = .spinning
-      if #available(macOS 11.0, *) {
-        spinner.controlSize = .large
-      } else {
-        spinner.controlSize = .regular
-      }
-      spinner.isDisplayedWhenStopped = false
-      spinner.isIndeterminate = true
-      spinner.autoresizingMask = [.width, .height]
-      self.spinner = spinner
-      spinner.usesThreadedAnimation = true
-      if icon == nil {
-        spinner.startAnimation(nil)
-      }
-
-      let view = NSView(frame: iconViewRect)
-      view.addSubview(iconImageView)
-      view.addSubview(spinner)
-      view.autoresizesSubviews = true
-      self.view = view
-    }
-
-    deinit {
-      self.iconView?.icon = nil
-    }
-  }
-
   var sourceSidebarElements = [SidebarElement]()
 
-  override var windowNibName: String {
-    return "ConfigSheet"
-  }
+  override var windowNibName: String { "ConfigSheet" }
 
   override func awakeFromNib() {
     super.awakeFromNib()
