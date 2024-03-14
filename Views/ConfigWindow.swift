@@ -10,6 +10,13 @@ import ScreenSaver
 
 final class ConfigWindowController: NSWindowController {
 
+  static let bundle = Bundle(for: ConfigWindowController.self)
+
+  private enum SidebarElement: Codable {
+    case group(name: String, contents: [SidebarElement])
+    case entry(sourceID: String, display: IconSourceDisplay)
+  }
+
   private var snapshot = Settings.defaults
   private var settingsObservations = [NSKeyValueObservation]()
   private var sliderFields = [NSSlider: WritableKeyPath<Settings, Double>]()
@@ -31,7 +38,7 @@ final class ConfigWindowController: NSWindowController {
   @IBOutlet weak var sourceDescription: NSTextField!
   @IBOutlet weak var sourceIconCollection: NSCollectionView!
 
-  var sourceSidebarElements = [SidebarElement]()
+  private var sourceSidebarElements = [SidebarElement]()
 
   override var windowNibName: String { "ConfigSheet" }
 
@@ -64,6 +71,8 @@ final class ConfigWindowController: NSWindowController {
 
   private func buildIconSourceSidebarElements() {
 
+    let builtInSidebar: [SidebarElement] = ConfigWindowController.loadBuiltInSidebar()
+
     let includedSpritesheetSidebar: [SidebarElement] = [
       .group(
         name: "Reliquary",
@@ -91,7 +100,7 @@ final class ConfigWindowController: NSWindowController {
         builtInSidebar,
         includedSpritesheetSidebar,
         importedSourceSidebar,
-      ].flatMap({ $0 }).compactMap({ element in
+      ].reduce([], +).compactMap({ element in
         switch element {
         case .entry:
           return [element]
@@ -187,6 +196,16 @@ final class ConfigWindowController: NSWindowController {
       sourceSidebar.scrollRowToVisible(defaultRow)
     }
   }
+
+  private static func loadBuiltInSidebar() -> [SidebarElement] {
+    guard
+      let data = NSDataAsset(name: "builtin_sidebar", bundle: bundle)?.data,
+      let json = try? JSONDecoder().decode([SidebarElement].self, from: data)
+    else {
+      return []
+    }
+    return json
+  }
 }
 
 extension NSUserInterfaceItemIdentifier {
@@ -209,7 +228,7 @@ extension ConfigWindowController: NSTableViewDataSource {
 
 extension ConfigWindowController: NSTableViewDelegate {
 
-  func isGroup(_ element: SidebarElement) -> Bool {
+  private func isGroup(_ element: SidebarElement) -> Bool {
     if case .group = element {
       return true
     }

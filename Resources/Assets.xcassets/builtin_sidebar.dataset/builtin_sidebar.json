@@ -1,0 +1,66 @@
+[
+    {
+        "group": {
+            "contents": [
+                {
+                    "entry": {
+                        "display": {
+                            "description": "The icons of all running applications with an open window.",
+                            "name": "Open Apps",
+                            "symbol": "menubar.dock.rectangle"
+                        },
+                        "sourceID": "builtin_running_apps"
+                    }
+                },
+                {
+                    "entry": {
+                        "display": {
+                            "description": "Icons for many common types of documents.",
+                            "name": "Common Files",
+                            "symbol": "doc"
+                        },
+                        "sourceID": "builtin_file_type"
+                    }
+                },
+                {
+                    "entry": {
+                        "display": {
+                            "description": "Icons older than dirt, here with us from the beginning.",
+                            "name": "Legacy Types",
+                            "symbol": "book.closed"
+                        },
+                        "sourceID": "builtin_hfs"
+                    }
+                }
+            ],
+            "name": "Basic Sets"
+        }
+    },
+    {
+        "group": {
+            "contents": [
+                {
+                    "entry": {
+                        "display": {
+                            "description": "The icons of applications residing in your Applications folders.",
+                            "name": "Installed Apps",
+                            "symbol": "square.grid.3x3"
+                        },
+                        "sourceID": "builtin_installed_apps"
+                    }
+                },
+                {
+                    "entry": {
+                        "display": {
+                            "description": "Icons deep within the OS, representing services, capabilities and devices.",
+                            "name": "System Internals",
+                            "symbol": "cpu"
+                        },
+                        "sourceID": "builtin_system_internals"
+                    }
+                }
+            ],
+            "name": "Deep Dives"
+        }
+    }
+]
