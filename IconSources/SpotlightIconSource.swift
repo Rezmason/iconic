@@ -72,16 +72,23 @@ private func getICNS(fromResourceFork path: String) -> NSImage? {
   let icnsMagic = "icns".data(using: .macOSRoman)!
   var searchRange = 0..<data.count
   while let magicRange = data.range(of: icnsMagic, options: [], in: searchRange) {
-    let sizeStart = magicRange.endIndex
-    let size = data.subdata(in: sizeStart..<(sizeStart + 4)).reduce(0) { $0 << 8 + $1 }
-    let endIndex = magicRange.startIndex + Int(size)
-    let icnsFile = data.subdata(in: magicRange.startIndex..<endIndex)
+    searchRange = magicRange.endIndex..<data.count
 
+    let sizeStart = magicRange.endIndex
+    let size = data.subdata(in: sizeStart..<(sizeStart + 4)).reduce(0) { $0 << 8 + UInt32($1) }
+
+    if size < (1 << 13) {
+      continue
+    }
+
+    let endIndex = magicRange.startIndex + Int(size)
+    if endIndex > data.endIndex {
+      return nil
+    }
+    let icnsFile = data.subdata(in: magicRange.startIndex..<endIndex)
     if let image = NSImage(data: icnsFile) {
       return image
     }
-
-    searchRange = magicRange.endIndex..<data.count
   }
 
   return nil
