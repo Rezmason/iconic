@@ -8,60 +8,18 @@
 
 import ScreenSaver
 
-enum BuiltInSourceKey: String, CaseIterable {
-  case runningApps = "builtin_running_apps"
-  case fileType = "builtin_file_type"
-  case hfs = "builtin_hfs"
-  case installedApps = "builtin_installed_apps"
-  case systemInternals = "builtin_system_internals"
-}
-
-let includedSpritesheets = SpritesheetIconSource.loadIncluded()
-
-private var sources = [String: IconSource]()
-
-func getSource(for id: String) -> IconSource? {
-  if let source = sources[id] {
-    return source
-  }
-
-  var source: IconSource?
-
-  switch BuiltInSourceKey.init(rawValue: id) {
-  case .some(.runningApps):
-    source = RunningAppsIconSource()
-  case .some(.fileType):
-    source = FileTypeIconSource()
-  case .some(.hfs):
-    source = HFSFileTypeIconSource()
-  case .some(.installedApps):
-    source = SpotlightIconSource.appIcons()
-  case .some(.systemInternals):
-    source = DeepIconSource.systemIcons()
-  case .none:
-    if let spritesheetDef = includedSpritesheets[id] {
-      source = SpritesheetIconSource(from: spritesheetDef)
-    }
-  // TODO: imported sources
-  }
-
-  sources[id] = source
-
-  return source
-}
-
-var settings = Settings.loadFromDisk()
-
 class IconicScreenSaverView: ScreenSaverView {
 
   private var animation: AnimationView?
-  lazy var controller = ConfigWindowController()
+  lazy var configSheet = ConfigWindowController(factory: factory, settings: settings)
   var settingsObservations = [NSKeyValueObservation]()
+  let factory = IconFactory()
+  var settings = Settings.loadFromDisk()
 
   override func startAnimation() {
     super.startAnimation()
 
-    let animation = AnimationView(frame: frame)
+    let animation = AnimationView(frame: frame, settings: settings)
     self.animation = animation
     addSubview(animation)
     animation.start()
@@ -69,16 +27,7 @@ class IconicScreenSaverView: ScreenSaverView {
     settingsObservations.append(
       settings.observe(\Settings.sources, options: .initial) { settings, _ in
         guard let animation = self.animation else { return }
-        animation.source = CompoundIconSource(
-          of:
-            settings.sources
-            .intersection(
-              Set(
-                BuiltInSourceKey.allCases.map({ $0.rawValue }) + includedSpritesheets.keys
-              )
-            )
-            .compactMap { getSource(for: $0) }
-        )
+        animation.source = self.factory.compound(of: settings.sources)
       }
     )
   }
@@ -98,14 +47,12 @@ class IconicScreenSaverView: ScreenSaverView {
     self.animation = nil
   }
 
-  override var hasConfigureSheet: Bool {
-    return true
-  }
+  override var hasConfigureSheet: Bool { true }
 
   override var configureSheet: NSWindow? {
-    if controller.window == nil {
-      controller.loadWindow()
+    if configSheet.window == nil {
+      configSheet.loadWindow()
     }
-    return controller.window
+    return configSheet.window
   }
 }

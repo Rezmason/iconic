@@ -10,6 +10,9 @@
 		3C2397782BA1FEA9002861ED /* IconSourceDisplay.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C2397772BA1FEA9002861ED /* IconSourceDisplay.swift */; };
 		3C23977A2BA26102002861ED /* IconImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C2397792BA26102002861ED /* IconImageView.swift */; };
 		3C23977C2BA2C111002861ED /* IconViewItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C23977B2BA2C111002861ED /* IconViewItem.swift */; };
+		3C2397842BA34BA4002861ED /* BuiltInSourceID.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C2397832BA34BA4002861ED /* BuiltInSourceID.swift */; };
+		3C2397862BA34BE0002861ED /* IconFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C2397852BA34BE0002861ED /* IconFactory.swift */; };
+		3C2397882BA34D5C002861ED /* SpritesheetDefinition.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C2397872BA34D5C002861ED /* SpritesheetDefinition.swift */; };
 		3C2BFD8B2245331E00B82AC7 /* ConfigWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C2BFD8A2245331E00B82AC7 /* ConfigWindow.swift */; };
 		3C45DE402B563EA600186F67 /* IconSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C45DE3F2B563EA600186F67 /* IconSource.swift */; };
 		3C45DE422B5A12BE00186F67 /* RunningAppsIconSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C45DE412B5A12BE00186F67 /* RunningAppsIconSource.swift */; };
@@ -37,6 +40,9 @@
 		3C2397772BA1FEA9002861ED /* IconSourceDisplay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IconSourceDisplay.swift; sourceTree = "<group>"; };
 		3C2397792BA26102002861ED /* IconImageView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IconImageView.swift; sourceTree = "<group>"; };
 		3C23977B2BA2C111002861ED /* IconViewItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IconViewItem.swift; sourceTree = "<group>"; };
+		3C2397832BA34BA4002861ED /* BuiltInSourceID.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BuiltInSourceID.swift; sourceTree = "<group>"; };
+		3C2397852BA34BE0002861ED /* IconFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IconFactory.swift; sourceTree = "<group>"; };
+		3C2397872BA34D5C002861ED /* SpritesheetDefinition.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpritesheetDefinition.swift; sourceTree = "<group>"; };
 		3C2BFD8A2245331E00B82AC7 /* ConfigWindow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfigWindow.swift; sourceTree = "<group>"; };
 		3C45DE3F2B563EA600186F67 /* IconSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IconSource.swift; sourceTree = "<group>"; };
 		3C45DE412B5A12BE00186F67 /* RunningAppsIconSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RunningAppsIconSource.swift; sourceTree = "<group>"; };
@@ -135,7 +141,10 @@
 			isa = PBXGroup;
 			children = (
 				3CAECA0A2B74A3A3004E7C70 /* Bag.swift */,
+				3C2397832BA34BA4002861ED /* BuiltInSourceID.swift */,
 				3CAECA0C2B75258E004E7C70 /* Icon.swift */,
+				3C2397852BA34BE0002861ED /* IconFactory.swift */,
+				3C2397872BA34D5C002861ED /* SpritesheetDefinition.swift */,
 				3C45DE3F2B563EA600186F67 /* IconSource.swift */,
 				3C2397772BA1FEA9002861ED /* IconSourceDisplay.swift */,
 				3CAEC9DD2B6A43B0004E7C70 /* IconStorage.swift */,
@@ -234,7 +243,9 @@
 				3C8253AC2B63C8A3002D8EEE /* Settings.swift in Sources */,
 				3C64403A2B9D91600094ED6D /* Card.swift in Sources */,
 				3C23977C2BA2C111002861ED /* IconViewItem.swift in Sources */,
+				3C2397842BA34BA4002861ED /* BuiltInSourceID.swift in Sources */,
 				3CF35CC62B37F1FC00243CA2 /* AnimationView.swift in Sources */,
+				3C2397882BA34D5C002861ED /* SpritesheetDefinition.swift in Sources */,
 				3C45DE4E2B5B578D00186F67 /* DeepIconSource.swift in Sources */,
 				3C45DE402B563EA600186F67 /* IconSource.swift in Sources */,
 				3C45DE442B5A151700186F67 /* SpotlightIconSource.swift in Sources */,
@@ -245,6 +256,7 @@
 				3CAECA0D2B75258E004E7C70 /* Icon.swift in Sources */,
 				3C6440362B9D91200094ED6D /* PlaceholderIconSource.swift in Sources */,
 				3C45DE462B5A1C9B00186F67 /* SpritesheetIconSource.swift in Sources */,
+				3C2397862BA34BE0002861ED /* IconFactory.swift in Sources */,
 				3C2397782BA1FEA9002861ED /* IconSourceDisplay.swift in Sources */,
 				3CAECA132B755394004E7C70 /* IconSpritesheet.swift in Sources */,
 			);

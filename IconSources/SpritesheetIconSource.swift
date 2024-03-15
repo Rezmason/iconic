@@ -10,21 +10,12 @@ import Cocoa
 
 class SpritesheetIconSource: IconSource {
 
-  static let bundle = Bundle(for: SpritesheetIconSource.self)
-
-  struct Definition: Codable {
-    let assetName: String
-    let iconSize: UInt
-    let pixelated: Bool
-    let display: IconSourceDisplay
-  }
-
   private let storage: IconStorage<UInt>
 
-  init(from definition: Definition) {
+  init(from definition: SpritesheetDefinition) {
 
     guard
-      let image = SpritesheetIconSource.bundle.image(
+      let image = Bundle(for: SpritesheetIconSource.self).image(
         forResource: NSImage.Name(definition.assetName))
     else {
       storage = IconStorage(with: { _ in return nil })
@@ -42,16 +33,6 @@ class SpritesheetIconSource: IconSource {
 
   func icon() async -> Icon? {
     return await storage.icon()
-  }
-
-  static func loadIncluded() -> [String: Definition] {
-    guard
-      let data = NSDataAsset(name: "included_spritesheets", bundle: bundle)?.data,
-      let json = try? JSONDecoder().decode([String: Definition].self, from: data)
-    else {
-      return [:]
-    }
-    return json
   }
 
 }

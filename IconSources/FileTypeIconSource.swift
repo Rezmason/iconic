@@ -11,8 +11,6 @@ import UniformTypeIdentifiers
 
 class FileTypeIconSource: IconSource {
 
-  static let bundle = Bundle(for: FileTypeIconSource.self)
-
   private let storage: IconStorage<String>
 
   init() {
@@ -32,6 +30,7 @@ class FileTypeIconSource: IconSource {
   }
 
   private static func loadContentTypes() -> [String] {
+    let bundle = Bundle(for: FileTypeIconSource.self)
     guard
       let data = NSDataAsset(name: "file_types", bundle: bundle)?.data,
       let json = try? JSONDecoder().decode([String].self, from: data)

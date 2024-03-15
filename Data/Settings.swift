@@ -24,7 +24,7 @@ private func getSettingsURL() -> URL? {
   return URL(fileURLWithPath: appSupportPath)
     .appendingPathComponent(bundleID)
 }
-private let settingsURL = getSettingsURL()
+private let url = getSettingsURL()
 
 class Settings: NSObject, Codable {
   @objc dynamic var count: Double = 0.5
@@ -33,7 +33,7 @@ class Settings: NSObject, Codable {
   @objc dynamic var ripple = 0.0
   @objc dynamic var sources: Set<String> = []
 
-  static let defaults = Settings(sources: [BuiltInSourceKey.runningApps.rawValue])
+  static let defaults = Settings(sources: [BuiltInSourceID.runningApps.rawValue])
 
   private init(sources: Set<String>) {
     super.init()
@@ -69,24 +69,17 @@ extension Set {
 extension Settings {
 
   static func loadFromDisk() -> Settings {
-    guard
-      let jsonPath = settingsURL?.appendingPathComponent("settings.json").path,
-      let jsonData = FileManager.default.contents(atPath: jsonPath),
-      let settings = try? JSONDecoder().decode(Settings.self, from: jsonData)
-    else {
-      return defaults
-    }
-    return settings
+    guard let url = url else { return defaults }
+    let jsonPath = url.appendingPathComponent("settings.json").path
+    guard let jsonData = FileManager.default.contents(atPath: jsonPath) else { return defaults }
+    return (try? JSONDecoder().decode(Settings.self, from: jsonData)) ?? defaults
   }
 
   func saveToDisk() {
-    guard
-      let jsonPath = settingsURL?.appendingPathComponent("settings.json").path,
-      let jsonData = try? JSONEncoder().encode(self)
-    else {
-      return
-    }
-    try? FileManager.default.createDirectory(at: settingsURL!, withIntermediateDirectories: false)
+    guard let url = url else { return }
+    let jsonPath = url.appendingPathComponent("settings.json").path
+    guard let jsonData = try? JSONEncoder().encode(self) else { return }
+    try? FileManager.default.createDirectory(at: url, withIntermediateDirectories: false)
     FileManager.default.createFile(atPath: jsonPath, contents: jsonData)
   }
 }

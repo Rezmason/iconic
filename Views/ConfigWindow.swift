@@ -10,8 +10,6 @@ import ScreenSaver
 
 final class ConfigWindowController: NSWindowController {
 
-  static let bundle = Bundle(for: ConfigWindowController.self)
-
   private enum SidebarElement: Codable {
     case group(name: String, contents: [SidebarElement])
     case entry(sourceID: String, display: IconSourceDisplay)
@@ -22,9 +20,9 @@ final class ConfigWindowController: NSWindowController {
   private var sliderFields = [NSSlider: WritableKeyPath<Settings, Double>]()
   private var selectedSourceID: String?
 
-  private var animation: AnimationView?
-  private var source: IconSource?
-
+  private weak var animation: AnimationView?
+  private let factory: IconFactory
+  private var settings: Settings
   private let iconViews = Array(0..<60).map { _ in IconViewItem() }
 
   @IBOutlet weak var animCountSlider: NSSlider!
@@ -40,13 +38,23 @@ final class ConfigWindowController: NSWindowController {
 
   private var sourceSidebarElements = [SidebarElement]()
 
+  init(factory: IconFactory, settings: Settings) {
+    self.factory = factory
+    self.settings = settings
+    super.init(window: nil)
+  }
+
+  required init?(coder: NSCoder) {
+    fatalError("Unimplemented")
+  }
+
   override var windowNibName: String { "ConfigSheet" }
 
   override func awakeFromNib() {
     super.awakeFromNib()
     snapshot = settings.snapshot()
     buildIconSourceCollection()
-    buildIconSourceSidebarElements()
+    buildIconSourceSidebarElements(factory: factory)
     buildIconSourceSidebar()
     buildAnimationView()
   }
@@ -69,14 +77,14 @@ final class ConfigWindowController: NSWindowController {
     sourceIconCollection.collectionViewLayout = layout
   }
 
-  private func buildIconSourceSidebarElements() {
+  private func buildIconSourceSidebarElements(factory: IconFactory) {
 
     let builtInSidebar: [SidebarElement] = ConfigWindowController.loadBuiltInSidebar()
 
     let includedSpritesheetSidebar: [SidebarElement] = [
       .group(
         name: "Reliquary",
-        contents: includedSpritesheets.compactMap({ (key, def) in
+        contents: factory.includedSpritesheets.compactMap({ (key, def) in
           return .entry(
             sourceID: key,
             display: def.display
@@ -153,7 +161,7 @@ final class ConfigWindowController: NSWindowController {
           }))
     }
 
-    let animation = AnimationView(frame: animationDemo.frame)
+    let animation = AnimationView(frame: animationDemo.frame, settings: settings)
     animation.transparent = true
     animationDemo.addSubview(animation)
     self.animation = animation
@@ -198,6 +206,7 @@ final class ConfigWindowController: NSWindowController {
   }
 
   private static func loadBuiltInSidebar() -> [SidebarElement] {
+    let bundle = Bundle(for: ConfigWindowController.self)
     guard
       let data = NSDataAsset(name: "builtin_sidebar", bundle: bundle)?.data,
       let json = try? JSONDecoder().decode([SidebarElement].self, from: data)
@@ -295,12 +304,9 @@ extension ConfigWindowController: NSTableViewDelegate {
     guard let sourceID = selectedSourceID else {
       return
     }
-    let source = getSource(for: sourceID)
 
-    for iconView in iconViews {
-      iconView.icon = nil
-    }
-
+    iconViews.forEach({ $0.icon = nil })
+    let source = factory.source(for: sourceID)
     // Not parallel, but neither are icon sources I believe
     for iconView in iconViews {
       iconView.icon = await source?.icon()

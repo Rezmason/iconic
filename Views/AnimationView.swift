@@ -12,14 +12,6 @@ private func mix(_ operand1: Double, _ operand2: Double, _ ratio: Double) -> Dou
   return (1 - ratio) * operand1 + ratio * operand2
 }
 
-private func randomPoint() -> vector_float2 {
-  return vector_float2(.random(in: 0...1), .random(in: 0...1))
-}
-
-private func sinv2(_ value: vector_float2) -> vector_float2 {
-  return vector_float2(sinf(value.x), sinf(value.y))
-}
-
 class AnimationView: SKView {
 
   var running = false
@@ -28,6 +20,7 @@ class AnimationView: SKView {
   let defaultSource: IconSource
   var source: IconSource
   var settingsObservations = [NSKeyValueObservation]()
+  var settings: Settings
 
   var transparent = false {
     didSet {
@@ -38,11 +31,11 @@ class AnimationView: SKView {
     }
   }
 
-  override init(frame: NSRect) {
-
+  init(frame: NSRect, settings: Settings) {
     context = AnimationContext(for: frame)
     defaultSource = PlaceholderIconSource(for: context.iconRect)
     source = defaultSource
+    self.settings = settings
     super.init(frame: frame)
 
     let scene = SKScene(size: frame.size)
