@@ -116,12 +116,13 @@ func getSource(for id: String) -> IconSource? {
   return source
 }
 
-let settings = Settings.load()
+var settings = Settings.loadFromDisk()
 
 class IconicScreenSaverView: ScreenSaverView {
 
   private var animation: AnimationView?
   lazy var controller = ConfigWindowController()
+  var settingsObservations = [NSKeyValueObservation]()
 
   override func startAnimation() {
     super.startAnimation()
@@ -131,8 +132,21 @@ class IconicScreenSaverView: ScreenSaverView {
     addSubview(animation)
     animation.start()
 
-    settings.sources += self.applySettings
-    settings.post()
+    settingsObservations.append(
+      settings.observe(\Settings.sources, options: .initial) { settings, _ in
+        guard let animation = self.animation else { return }
+        animation.source = CompoundIconSource(
+          of:
+            Set(sourceDefinitions.keys)
+            .intersection(settings.sources)
+            .compactMap { getSource(for: $0) }
+        )
+      }
+    )
+  }
+
+  deinit {
+    settingsObservations.removeAll()
   }
 
   override func stopAnimation() {
@@ -155,15 +169,5 @@ class IconicScreenSaverView: ScreenSaverView {
       controller.loadWindow()
     }
     return controller.window
-  }
-
-  private func applySettings() {
-    guard let animation = animation else { return }
-    animation.source = CompoundIconSource(
-      of:
-        Set(sourceDefinitions.keys)
-        .intersection(settings.sources)
-        .compactMap { getSource(for: $0) }
-    )
   }
 }

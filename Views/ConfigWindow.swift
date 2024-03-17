@@ -12,7 +12,8 @@ import SpriteKit
 final class ConfigWindowController: NSWindowController {
 
   private var snapshot = Settings.defaults
-  private var sliderParams = [NSSlider: Param<Double>]()
+  private var settingsObservations = [NSKeyValueObservation]()
+  private var sliderFields = [NSSlider: WritableKeyPath<Settings, Double>]()
   private var selectedSourceID: String?
 
   private var animation: AnimationView?
@@ -78,6 +79,11 @@ final class ConfigWindowController: NSWindowController {
       view.autoresizesSubviews = true
       self.view = view
     }
+
+    deinit {
+      self.source = nil
+      self.imageView?.image = nil
+    }
   }
 
   var importedSources = [String]()
@@ -94,7 +100,10 @@ final class ConfigWindowController: NSWindowController {
     buildIconSourceSidebarElements()
     buildIconSourceSidebar()
     buildAnimationView()
-    settings.post()
+  }
+
+  deinit {
+    settingsObservations.removeAll()
   }
 
   private func buildIconSourceCollection() {
@@ -163,11 +172,14 @@ final class ConfigWindowController: NSWindowController {
     sourceSidebar.dataSource = self
     sourceSidebar.delegate = self
 
-    settings.sources += { _ in
-      if let sourceID = self.selectedSourceID {
-        self.sourceToggle.state = settings.sources.contains(sourceID) ? .on : .off
-      }
-    }
+    settingsObservations.append(
+      settings.observe(
+        \Settings.sources, options: .initial,
+        changeHandler: { settings, _ in
+          if let sourceID = self.selectedSourceID {
+            self.sourceToggle.state = settings.sources.contains(sourceID) ? .on : .off
+          }
+        }))
 
     let defaultRow = sourceSidebarElements.firstIndex { !isGroup($0) }!
     let indices = IndexSet.init(integer: defaultRow)
@@ -176,15 +188,21 @@ final class ConfigWindowController: NSWindowController {
   }
 
   private func buildAnimationView() {
-    sliderParams = [
-      animCountSlider: settings.count,
-      animLifespanSlider: settings.lifespan,
-      animScaleSlider: settings.scale,
-      animRippleSlider: settings.ripple,
+
+    sliderFields = [
+      animCountSlider: \Settings.count,
+      animLifespanSlider: \Settings.lifespan,
+      animScaleSlider: \Settings.scale,
+      animRippleSlider: \Settings.ripple,
     ]
 
-    for (slider, param) in sliderParams {
-      param += { _ in slider.doubleValue = param.value }
+    for (slider, keyPath) in sliderFields {
+      settingsObservations.append(
+        settings.observe(
+          keyPath, options: [.initial, .new],
+          changeHandler: { _, change in
+            slider.doubleValue = change.newValue ?? 0.0
+          }))
     }
 
     let animation = AnimationView(frame: animationDemo.frame)
@@ -204,23 +222,23 @@ final class ConfigWindowController: NSWindowController {
 
   @IBAction func handlingNSSliderChanges(_ sender: Any) {
     if let slider = sender as? NSSlider {
-      sliderParams[slider]!.value = slider.doubleValue
+      settings[keyPath: sliderFields[slider]!] = slider.doubleValue
     }
   }
 
   @IBAction func ok(_ sender: Any?) {
     snapshot = settings.snapshot()
-    settings.save()
+    settings.saveToDisk()
     self.window?.sheetParent?.endSheet(self.window!)
   }
 
   @IBAction func cancel(_ sender: Any?) {
-    settings.overwrite(snapshot)
+    settings.overwrite(with: snapshot)
     self.window?.sheetParent?.endSheet(self.window!)
   }
 
   @IBAction func restoreDefaults(_ sender: Any?) {
-    settings.overwrite(Settings.defaults)
+    settings.overwrite(with: .defaults)
     if let sourceID = selectedSourceID {
       sourceToggle.state = settings.sources.contains(sourceID) ? .on : .off
     } else {

@@ -62,11 +62,18 @@ class Card: SKEffectNode {
   }
 
   func runAnimation() async {
-    let duration = Double.random(in: (context.lifespan / 2)...context.lifespan)
-
     removeAllActions()
     alpha = 0
+    let duration = Double.random(in: (context.lifespan / 2)...context.lifespan)
+    await self.run(
+      SKAction.group([
+        makeMove(duration),
+        makeRipple(duration),
+        makeFade(duration),
+      ]))
+  }
 
+  func makeMove(_ duration: Double) -> SKAction {
     let initialPosition = vector_double3(
       .random(in: context.backRange.x),
       .random(in: context.backRange.y),
@@ -86,7 +93,7 @@ class Card: SKEffectNode {
     let rotationSpeed = (Bool.random() ? 1.0 : -1.0) * 4
     shape.isHidden = !isTwirling
 
-    let move = SKAction.customAction(withDuration: duration) { _, elapsedTime in
+    return SKAction.customAction(withDuration: duration) { _, elapsedTime in
       let worldPosition = simd_mix(initialPosition, finalPosition, three * elapsedTime / duration)
       let perspectiveScale = self.context.focalLength / worldPosition.z
       self.zPosition = -worldPosition.z
@@ -102,8 +109,10 @@ class Card: SKEffectNode {
         self.sprite.zRotation = rotationSpeed * elapsedTime
       }
     }
+  }
 
-    let ripple = SKAction.customAction(withDuration: duration) { _, elapsedTime in
+  func makeRipple(_ duration: Double) -> SKAction {
+    return SKAction.customAction(withDuration: duration) { _, elapsedTime in
 
       if self.context.ripple == 0 {
         self.warpGeometry = nil
@@ -118,13 +127,13 @@ class Card: SKEffectNode {
       })
       self.warpGeometry = self.context.warp.replacingByDestinationPositions(positions: warped)
     }
+  }
 
-    let fade = SKAction.sequence([
+  func makeFade(_ duration: Double) -> SKAction {
+    return SKAction.sequence([
       SKAction.fadeIn(withDuration: duration * 0.2),
       SKAction.wait(forDuration: duration * (1 - 0.2 * 2)),
       SKAction.fadeOut(withDuration: duration * 0.2),
     ])
-
-    await self.run(SKAction.group([move, ripple, fade]))
   }
 }

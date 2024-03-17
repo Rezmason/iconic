@@ -8,8 +8,6 @@
 
 import SpriteKit
 
-// var debugBackgroundColor: NSColor = .yellow
-
 private func mix(_ operand1: Double, _ operand2: Double, _ ratio: Double) -> Double {
   return (1 - ratio) * operand1 + ratio * operand2
 }
@@ -29,6 +27,7 @@ class AnimationView: SKView {
   var context: AnimationContext
   let defaultSource: IconSource
   var source: IconSource
+  var settingsObservations = [NSKeyValueObservation]()
 
   var transparent = false {
     didSet {
@@ -48,7 +47,6 @@ class AnimationView: SKView {
 
     let scene = SKScene(size: frame.size)
     scene.backgroundColor = transparent ? .clear : .black
-    //    scene.backgroundColor = debugBackgroundColor
 
     presentScene(scene)
 
@@ -58,18 +56,38 @@ class AnimationView: SKView {
       cards.append(card)
     }
 
-    settings.count += {
-      let context = self.context
-      let oldCount = context.count
-      context.count = Int(mix(10, 30, $0))
-      if self.running && context.count > oldCount {
-        self.startIconAnimations(oldCount..<context.count)
-      }
-    }
+    settingsObservations.append(
+      settings.observe(
+        \Settings.count, options: .initial,
+        changeHandler: { settings, _ in
+          let context = self.context
+          let oldCount = context.count
+          context.count = Int(mix(10, 30, settings.count))
+          if self.running && context.count > oldCount {
+            self.startIconAnimations(oldCount..<context.count)
+          }
+        }))
 
-    settings.lifespan += { self.context.lifespan = mix(15, 5, $0) }
-    settings.scale += { self.context.scale = mix(0.5, 2.0, $0) }
-    settings.ripple += { self.context.ripple = mix(0.0, 0.1, $0) }
+    settingsObservations.append(
+      settings.observe(
+        \Settings.lifespan, options: .initial,
+        changeHandler: { settings, _ in
+          self.context.lifespan = mix(15, 5, settings.lifespan)
+        }))
+
+    settingsObservations.append(
+      settings.observe(
+        \Settings.scale, options: .initial,
+        changeHandler: { settings, _ in
+          self.context.scale = mix(0.5, 2.0, settings.scale)
+        }))
+
+    settingsObservations.append(
+      settings.observe(
+        \Settings.ripple, options: .initial,
+        changeHandler: { settings, _ in
+          self.context.ripple = mix(0.0, 0.1, settings.ripple)
+        }))
   }
 
   required init?(coder: NSCoder) {
@@ -94,7 +112,6 @@ class AnimationView: SKView {
     if card.isHidden {
       return
     }
-    //    self.scene?.backgroundColor = debugBackgroundColor
     card.icon = await source.icon()
     await card.runAnimation()
     await self.animate(index)

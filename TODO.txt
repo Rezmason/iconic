@@ -1,3 +1,6 @@
+Move most data to JSON
+	definitions aren't necessary
+		https://docs.swift.org/swift-book/documentation/the-swift-programming-language/enumerations/#Raw-Values
 thereCanBeOnlyOne
 	original screensaver prevents an icon from appearing multiple times at once
 Code review?
