@@ -8,7 +8,7 @@
 
 import Cocoa
 
-struct IconSpriteSheet {
+struct IconSpritesheet {
   let image: NSImage
   let numRows: UInt
   let numColumns: UInt

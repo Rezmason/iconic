@@ -57,7 +57,7 @@ class DeepIconSource: IconSource {
 
   func beginSearch(with args: [String]) {
 
-    search.launchPath = "/usr/bin/find"
+    search.executableURL = URL(fileURLWithPath: "/usr/bin/find")
     search.arguments = args
 
     let stdout = Pipe()

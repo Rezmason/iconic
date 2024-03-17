@@ -24,7 +24,7 @@ class SpritesheetIconSource: IconSource {
     }
 
     let pixelated = spritesheetData["pixelated"] as? Bool ?? false
-    let spritesheet = IconSpriteSheet(image: image, iconWidth: iconWidth, pixelated: pixelated)
+    let spritesheet = IconSpritesheet(image: image, iconWidth: iconWidth, pixelated: pixelated)
     storage = IconStorage(with: { return spritesheet.icon(at: $0) })
     Task.detached { await self.storage.add(contentsOf: 0..<spritesheet.count) }
   }
