@@ -100,7 +100,7 @@ func getSource(for id: String) -> IconSource? {
       source = HFSFileTypeIconSource()
     case .workspace(.uttype):
       if #available(macOS 11, *) {
-        source = UTTypeIconSource()
+        source = FileTypeIconSource()
       }
     case .filesystem(.installedApps):
       source = SpotlightIconSource.appIcons()

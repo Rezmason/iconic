@@ -1,5 +1,5 @@
 //
-//  UTTypeIconSource.swift
+//  FileTypeIconSource.swift
 //  Iconic
 //
 //  Created by Jeremy Sachs on 1/24/24.
@@ -10,7 +10,7 @@ import Cocoa
 import UniformTypeIdentifiers
 
 @available(macOS 11, *)
-class UTTypeIconSource: IconSource {
+class FileTypeIconSource: IconSource {
 
   private let storage: IconStorage<UTType>
 
