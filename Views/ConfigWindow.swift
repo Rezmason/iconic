@@ -24,7 +24,7 @@ final class ConfigWindowController: NSWindowController {
   @IBOutlet weak var animCountSlider: NSSlider!
   @IBOutlet weak var animLifespanSlider: NSSlider!
   @IBOutlet weak var animScaleSlider: NSSlider!
-  @IBOutlet weak var animAquaSlider: NSSlider!
+  @IBOutlet weak var animRippleSlider: NSSlider!
   @IBOutlet weak var animationDemo: NSView!
 
   @IBOutlet weak var sourceSidebar: NSTableView!
@@ -180,7 +180,7 @@ final class ConfigWindowController: NSWindowController {
       animCountSlider: settings.count,
       animLifespanSlider: settings.lifespan,
       animScaleSlider: settings.scale,
-      animAquaSlider: settings.aqua,
+      animRippleSlider: settings.ripple,
     ]
 
     for (slider, param) in sliderParams {

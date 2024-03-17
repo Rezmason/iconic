@@ -56,7 +56,7 @@ class AnimationContext {
   var count = 0
   var lifespan = 0.0
   var scale = 0.0
-  var aqua = 0.0
+  var ripple = 0.0
 
   var warpPoints: [vector_float2]
   let warp: SKWarpGeometryGrid
@@ -199,13 +199,13 @@ class Card: SKEffectNode {
 
     let ripple = SKAction.customAction(withDuration: duration) { _, elapsedTime in
 
-      if self.context.aqua == 0 {
+      if self.context.ripple == 0 {
         self.warpGeometry = nil
         return
       }
 
       let now = Float(elapsedTime)
-      let rippleScale = expf(-6.0 * powf(now / Float(duration), 2.0)) * Float(self.context.aqua)
+      let rippleScale = expf(-6.0 * powf(now / Float(duration), 2.0)) * Float(self.context.ripple)
       let rippleAngle = atan2f(Float(self.position.x), Float(self.position.y))
       let warped = self.context.warpPoints.map({
         self.applyRipple(to: $0, at: now, from: rippleAngle, by: rippleScale)
@@ -270,7 +270,7 @@ class AnimationView: SKView {
 
     settings.lifespan += { self.context.lifespan = mix(15, 5, $0) }
     settings.scale += { self.context.scale = mix(0.5, 2.0, $0) }
-    settings.aqua += { self.context.aqua = mix(0.0, 0.1, $0) }
+    settings.ripple += { self.context.ripple = mix(0.0, 0.1, $0) }
   }
 
   required init?(coder: NSCoder) {

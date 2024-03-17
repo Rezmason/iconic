@@ -8,9 +8,9 @@
     <objects>
         <customObject id="-2" userLabel="File's Owner" customClass="ConfigWindowController" customModule="Iconic" customModuleProvider="target">
             <connections>
-                <outlet property="animAquaSlider" destination="sjF-T2-R4G" id="pDz-fJ-TRx"/>
                 <outlet property="animCountSlider" destination="WLV-WV-x35" id="qOw-zn-DsR"/>
                 <outlet property="animLifespanSlider" destination="dVI-yn-tKU" id="pRZ-4a-dae"/>
+                <outlet property="animRippleSlider" destination="sjF-T2-R4G" id="pDz-fJ-TRx"/>
                 <outlet property="animScaleSlider" destination="qWm-qi-SCi" id="pWy-P9-zAl"/>
                 <outlet property="animationDemo" destination="4Ki-G3-cp4" id="iLE-PW-Kh9"/>
                 <outlet property="sourceDescription" destination="zZT-zJ-o6C" id="j9I-AF-CQL"/>
@@ -305,7 +305,7 @@ Gw
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" heightSizable="YES"/>
                                             <clipView key="contentView" drawsBackground="NO" id="tIb-1s-KOW">
                                                 <rect key="frame" x="0.0" y="0.0" width="251" height="198"/>
-                                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                                <autoresizingMask key="autoresizingMask"/>
                                                 <subviews>
                                                     <textView editable="NO" importsGraphics="NO" verticallyResizable="YES" spellingCorrection="YES" smartInsertDelete="YES" id="kfQ-OG-KjX">
                                                         <rect key="frame" x="0.0" y="0.0" width="251" height="198"/>
@@ -637,7 +637,7 @@ Eric Peyton • Eric Kidd • Christopher Lane</string>
                                                         <autoresizingMask key="autoresizingMask" flexibleMinX="YES" heightSizable="YES"/>
                                                         <clipView key="contentView" drawsBackground="NO" id="LFC-l9-Ke1">
                                                             <rect key="frame" x="0.0" y="0.0" width="344" height="395"/>
-                                                            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                                            <autoresizingMask key="autoresizingMask"/>
                                                             <subviews>
                                                                 <textView editable="NO" selectable="NO" importsGraphics="NO" verticallyResizable="YES" spellingCorrection="YES" smartInsertDelete="YES" id="hhf-k5-iar">
                                                                     <rect key="frame" x="0.0" y="-10" width="344" height="909"/>

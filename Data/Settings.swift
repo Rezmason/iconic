@@ -109,14 +109,14 @@ class Settings {
     settings.count.value = 0.5
     settings.lifespan.value = 0.4
     settings.scale.value = 0.6
-    settings.aqua.value = 0.0
+    settings.ripple.value = 0.0
     settings.sources.insert(sourceRunningAppsKey)
   }
 
   let count = Param(0.0)
   let lifespan = Param(0.0)
   let scale = Param(0.0)
-  let aqua = Param(0.0)
+  let ripple = Param(0.0)
   let sources = SetParam<String>([])
 
   static func load() -> Settings {
@@ -145,7 +145,7 @@ class Settings {
       settings.count.value = dict["count"] as? Double ?? Settings.defaults.count.value
       settings.lifespan.value = dict["lifespan"] as? Double ?? Settings.defaults.lifespan.value
       settings.scale.value = dict["scale"] as? Double ?? Settings.defaults.scale.value
-      settings.aqua.value = dict["aqua"] as? Double ?? Settings.defaults.aqua.value
+      settings.ripple.value = dict["ripple"] as? Double ?? Settings.defaults.ripple.value
     }
   }
 
@@ -155,7 +155,7 @@ class Settings {
       "count": count.value,
       "lifespan": lifespan.value,
       "scale": scale.value,
-      "aqua": aqua.value,
+      "ripple": ripple.value,
     ]
 
     if let settingsURL = settingsURL {
@@ -189,7 +189,7 @@ class Settings {
     count.post()
     lifespan.post()
     scale.post()
-    aqua.post()
+    ripple.post()
     sources.post()
   }
 
@@ -197,7 +197,7 @@ class Settings {
     count.value = other.count.value
     lifespan.value = other.lifespan.value
     scale.value = other.scale.value
-    aqua.value = other.aqua.value
+    ripple.value = other.ripple.value
     sources.overwrite(other.sources)
   }
 }
