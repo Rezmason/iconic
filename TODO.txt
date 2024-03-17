@@ -1,24 +1,13 @@
+Code review?
 README.md
-	Remake GIF
 	Download link
 	What it is
 		Screenshots
-	System requirements
-	---
 	Maybe an essay
-
-Notarization
-Website? Readme rtf?
-DMG release
-	https://zgcoder.net/ramblings/modern-dmgs/
 https://github.com/agarrharr/awesome-macos-screensavers
+self hosted page
 
 ----------------
-
-Code review?
-	Generic bag
-	autoreleasepool and memory usage
-		Look at it in Instruments
 
 v1.1
 	thereCanBeOnlyOne
