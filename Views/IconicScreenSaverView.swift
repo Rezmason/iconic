@@ -123,14 +123,6 @@ class IconicScreenSaverView: ScreenSaverView {
   private var animation: AnimationView?
   lazy var controller = ConfigWindowController()
 
-  override init?(frame: CGRect, isPreview: Bool) {
-    super.init(frame: frame, isPreview: false)
-  }
-
-  required init?(coder decoder: NSCoder) {
-    super.init(coder: decoder)
-  }
-
   override func startAnimation() {
     super.startAnimation()
 

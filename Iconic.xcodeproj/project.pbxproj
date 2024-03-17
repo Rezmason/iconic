@@ -15,6 +15,9 @@
 		3C45DE482B5ADD7C00186F67 /* HFSFileTypeIconSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C45DE472B5ADD7C00186F67 /* HFSFileTypeIconSource.swift */; };
 		3C45DE4A2B5AE64800186F67 /* UTTypeIconSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C45DE492B5AE64800186F67 /* UTTypeIconSource.swift */; };
 		3C45DE4E2B5B578D00186F67 /* DeepIconSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C45DE4D2B5B578D00186F67 /* DeepIconSource.swift */; };
+		3C6440362B9D91200094ED6D /* PlaceholderIconSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C6440352B9D91200094ED6D /* PlaceholderIconSource.swift */; };
+		3C6440382B9D91470094ED6D /* AnimationContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C6440372B9D91470094ED6D /* AnimationContext.swift */; };
+		3C64403A2B9D91600094ED6D /* Card.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C6440392B9D91600094ED6D /* Card.swift */; };
 		3C8253AC2B63C8A3002D8EEE /* Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C8253AB2B63C8A3002D8EEE /* Settings.swift */; };
 		3C85CA2922435C25005C33CC /* IconicScreenSaverView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C85CA2822435C25005C33CC /* IconicScreenSaverView.swift */; };
 		3CAEC9DE2B6A43B0004E7C70 /* IconStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3CAEC9DD2B6A43B0004E7C70 /* IconStorage.swift */; };
@@ -37,6 +40,9 @@
 		3C45DE472B5ADD7C00186F67 /* HFSFileTypeIconSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HFSFileTypeIconSource.swift; sourceTree = "<group>"; };
 		3C45DE492B5AE64800186F67 /* UTTypeIconSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UTTypeIconSource.swift; sourceTree = "<group>"; };
 		3C45DE4D2B5B578D00186F67 /* DeepIconSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeepIconSource.swift; sourceTree = "<group>"; };
+		3C6440352B9D91200094ED6D /* PlaceholderIconSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaceholderIconSource.swift; sourceTree = "<group>"; };
+		3C6440372B9D91470094ED6D /* AnimationContext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnimationContext.swift; sourceTree = "<group>"; };
+		3C6440392B9D91600094ED6D /* Card.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Card.swift; sourceTree = "<group>"; };
 		3C8253AB2B63C8A3002D8EEE /* Settings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Settings.swift; sourceTree = "<group>"; };
 		3C85CA1B22435C17005C33CC /* Iconic.saver */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = Iconic.saver; sourceTree = BUILT_PRODUCTS_DIR; };
 		3C85CA2222435C17005C33CC /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -69,6 +75,7 @@
 				3CAEC9DF2B6A43F3004E7C70 /* CompoundIconSource.swift */,
 				3C45DE452B5A1C9B00186F67 /* SpritesheetIconSource.swift */,
 				3C45DE412B5A12BE00186F67 /* RunningAppsIconSource.swift */,
+				3C6440352B9D91200094ED6D /* PlaceholderIconSource.swift */,
 				3C45DE432B5A151700186F67 /* SpotlightIconSource.swift */,
 				3C45DE4D2B5B578D00186F67 /* DeepIconSource.swift */,
 				3C45DE492B5AE64800186F67 /* UTTypeIconSource.swift */,
@@ -111,6 +118,8 @@
 			children = (
 				3C85CA2822435C25005C33CC /* IconicScreenSaverView.swift */,
 				3CF35CC52B37F1FC00243CA2 /* AnimationView.swift */,
+				3C6440392B9D91600094ED6D /* Card.swift */,
+				3C6440372B9D91470094ED6D /* AnimationContext.swift */,
 				3C2BFD8A2245331E00B82AC7 /* ConfigWindow.swift */,
 				3CAECA082B74A15F004E7C70 /* Sidebar.swift */,
 			);
@@ -211,11 +220,13 @@
 			buildActionMask = 2147483647;
 			files = (
 				3C45DE482B5ADD7C00186F67 /* HFSFileTypeIconSource.swift in Sources */,
+				3C6440382B9D91470094ED6D /* AnimationContext.swift in Sources */,
 				3C85CA2922435C25005C33CC /* IconicScreenSaverView.swift in Sources */,
 				3CAEC9DE2B6A43B0004E7C70 /* IconStorage.swift in Sources */,
 				3C45DE422B5A12BE00186F67 /* RunningAppsIconSource.swift in Sources */,
 				3C2BFD8B2245331E00B82AC7 /* ConfigWindow.swift in Sources */,
 				3C8253AC2B63C8A3002D8EEE /* Settings.swift in Sources */,
+				3C64403A2B9D91600094ED6D /* Card.swift in Sources */,
 				3CF35CC62B37F1FC00243CA2 /* AnimationView.swift in Sources */,
 				3C45DE4E2B5B578D00186F67 /* DeepIconSource.swift in Sources */,
 				3C45DE402B563EA600186F67 /* IconSource.swift in Sources */,
@@ -225,6 +236,7 @@
 				3CAEC9E02B6A43F3004E7C70 /* CompoundIconSource.swift in Sources */,
 				3CAECA092B74A15F004E7C70 /* Sidebar.swift in Sources */,
 				3CAECA0D2B75258E004E7C70 /* Icon.swift in Sources */,
+				3C6440362B9D91200094ED6D /* PlaceholderIconSource.swift in Sources */,
 				3C45DE462B5A1C9B00186F67 /* SpritesheetIconSource.swift in Sources */,
 				3CAECA132B755394004E7C70 /* IconSpritesheet.swift in Sources */,
 			);
