@@ -15,6 +15,7 @@ private func mix(_ operand1: Double, _ operand2: Double, _ ratio: Double) -> Dou
 class AnimationView: SKView {
 
   var running = false
+  let iconScene: SKScene
   var cards = [Card]()
   var context: AnimationContext
   let defaultSource: IconSource
@@ -26,7 +27,7 @@ class AnimationView: SKView {
     didSet {
       if transparent != oldValue {
         allowsTransparency = transparent
-        scene!.backgroundColor = transparent ? .clear : .black
+        iconScene.backgroundColor = transparent ? .clear : .black
       }
     }
   }
@@ -35,24 +36,22 @@ class AnimationView: SKView {
     context = AnimationContext(for: frame)
     defaultSource = PlaceholderIconSource(for: context.iconRect)
     source = defaultSource
+    iconScene = SKScene(size: frame.size)
     self.settings = settings
     super.init(frame: frame)
+    presentScene(iconScene)
 
-    let scene = SKScene(size: frame.size)
-    scene.backgroundColor = transparent ? .clear : .black
-
-    presentScene(scene)
+    iconScene.backgroundColor = transparent ? .clear : .black
 
     for _ in 0..<context.maxIcons {
-      let card = Card(context)
-      scene.addChild(card)
-      cards.append(card)
+      cards.append(Card(context))
     }
 
     settingsObservations.append(
       settings.observe(
         \Settings.count, options: .initial,
-        changeHandler: { settings, _ in
+        changeHandler: { [weak self] settings, _ in
+          guard let self = self else { return }
           let context = self.context
           let oldCount = context.count
           context.count = Int(mix(10, 30, settings.count))
@@ -64,21 +63,24 @@ class AnimationView: SKView {
     settingsObservations.append(
       settings.observe(
         \Settings.lifespan, options: .initial,
-        changeHandler: { settings, _ in
+        changeHandler: { [weak self] settings, _ in
+          guard let self = self else { return }
           self.context.lifespan = mix(15, 5, settings.lifespan)
         }))
 
     settingsObservations.append(
       settings.observe(
         \Settings.scale, options: .initial,
-        changeHandler: { settings, _ in
+        changeHandler: { [weak self] settings, _ in
+          guard let self = self else { return }
           self.context.scale = mix(0.5, 2.0, settings.scale)
         }))
 
     settingsObservations.append(
       settings.observe(
         \Settings.ripple, options: .initial,
-        changeHandler: { settings, _ in
+        changeHandler: { [weak self] settings, _ in
+          guard let self = self else { return }
           self.context.ripple = mix(0.0, 0.1, settings.ripple)
         }))
   }
@@ -87,32 +89,47 @@ class AnimationView: SKView {
     fatalError("Unimplemented")
   }
 
+  deinit {
+    stop()
+    presentScene(nil)
+    settingsObservations.removeAll()
+  }
+
   func start() {
-    if running {
-      return
-    }
+    if running { return }
     running = true
+    cards.forEach { iconScene.addChild($0) }
     startIconAnimations(0..<context.count)
   }
 
   func stop() {
     running = false
+    for card in cards {
+      card.removeFromParent()
+      card.icon = nil
+    }
+    source = defaultSource
   }
 
   private func animate(_ index: Int) async {
     let card = cards[index]
     card.isHidden = !running || index >= context.count
-    if card.isHidden {
-      return
-    }
+    if card.isHidden { return }
     card.icon = await source.icon()
-    await card.runAnimation()
-    await self.animate(index)
+    card.runAnimation { [weak self, weak card] in
+      card?.icon = nil
+      guard let self = self else { return }
+      Task {
+        await self.animate(index)
+      }
+    }
   }
 
   private func startIconAnimations(_ range: Range<Int>) {
     for index in range {
-      scene!.run(SKAction.wait(forDuration: Double.random(in: 0...Double(context.count)))) {
+      let duration = Double.random(in: 0...Double(context.count))
+      iconScene.run(SKAction.wait(forDuration: duration)) { [weak self] in
+        guard let self = self else { return }
         Task {
           await self.animate(index)
         }

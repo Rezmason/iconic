@@ -13,6 +13,10 @@ class IconFactory {
   let includedSpritesheets = IconFactory.loadIncludedSpritesheets()
   private var sources = [String: IconSource]()
 
+  func clearSources() {
+    sources.removeAll()
+  }
+
   func source(for id: String) -> IconSource? {
     if let source = sources[id] {
       return source

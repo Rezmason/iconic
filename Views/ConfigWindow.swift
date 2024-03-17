@@ -21,8 +21,8 @@ final class ConfigWindowController: NSWindowController {
   private var selectedSourceID: String?
 
   private weak var animation: AnimationView?
-  private let factory: IconFactory
-  private var settings: Settings
+  private weak var factory: IconFactory?
+  private weak var settings: Settings?
   private let iconViews = Array(0..<60).map { _ in IconViewItem() }
 
   @IBOutlet weak var animCountSlider: NSSlider!
@@ -50,22 +50,64 @@ final class ConfigWindowController: NSWindowController {
 
   override var windowNibName: String { "ConfigSheet" }
 
+  override var window: NSWindow? {
+    get {
+      if super.window == nil {
+        Bundle(for: ConfigWindowController.self).loadNibNamed(
+          windowNibName,
+          owner: self,
+          topLevelObjects: nil
+        )
+      }
+      return super.window
+    }
+    set { super.window = newValue }
+  }
+
   override func awakeFromNib() {
     super.awakeFromNib()
-    snapshot = settings.snapshot()
-    buildIconSourceCollection()
-    buildIconSourceSidebarElements(factory: factory)
-    buildIconSourceSidebar()
-    buildAnimationView()
+    setup()
   }
 
   deinit {
+    tearDown()
+  }
+
+  private func setup() {
+    guard
+      let settings = settings,
+      let factory = factory
+    else {
+      fatalError("Config sheet must be initialized with settings and factory objects.")
+    }
+    snapshot = settings.snapshot()
+    buildIconSourceCollection()
+    buildIconSourceSidebarElements(withFactory: factory)
+    buildIconSourceSidebar(withSettings: settings)
+    buildAnimationView(withSettings: settings)
+  }
+
+  private func tearDown() {
     settingsObservations.removeAll()
+
+    sourceIconCollection?.dataSource = nil
+    sourceSidebarElements = []
+    sourceSidebar?.dataSource = nil
+    sourceSidebar?.delegate = nil
+    sliderFields = [:]
+
+    animation?.stop()
+    animation?.removeFromSuperview()
+    animation = nil
+
+    iconViews.forEach({ $0.icon = nil })
+
+    super.window?.sheetParent?.endSheet(window!)
+    super.window = nil
   }
 
   private func buildIconSourceCollection() {
     sourceIconCollection.dataSource = self
-    sourceIconCollection.delegate = self
 
     let layout = NSCollectionViewGridLayout()
     layout.margins = NSEdgeInsets(top: 8, left: 8, bottom: 8, right: 8)
@@ -77,7 +119,7 @@ final class ConfigWindowController: NSWindowController {
     sourceIconCollection.collectionViewLayout = layout
   }
 
-  private func buildIconSourceSidebarElements(factory: IconFactory) {
+  private func buildIconSourceSidebarElements(withFactory factory: IconFactory) {
 
     let builtInSidebar: [SidebarElement] = ConfigWindowController.loadBuiltInSidebar()
 
@@ -120,7 +162,7 @@ final class ConfigWindowController: NSWindowController {
       }) as [[SidebarElement]]).flatMap({ $0 })
   }
 
-  private func buildIconSourceSidebar() {
+  private func buildIconSourceSidebar(withSettings settings: Settings) {
 
     sourceSidebar.allowsEmptySelection = false
     sourceSidebar.allowsMultipleSelection = false
@@ -143,7 +185,7 @@ final class ConfigWindowController: NSWindowController {
     sourceSidebar.scrollRowToVisible(defaultRow)
   }
 
-  private func buildAnimationView() {
+  private func buildAnimationView(withSettings settings: Settings) {
 
     sliderFields = [
       animCountSlider: \Settings.count,
@@ -165,35 +207,34 @@ final class ConfigWindowController: NSWindowController {
     animation.transparent = true
     animationDemo.addSubview(animation)
     self.animation = animation
-
     animation.start()
   }
 
   @IBAction func handlingNSSwitchChanges(_ sender: Any) {
-    guard let sourceID = selectedSourceID else {
-      return
-    }
-    settings.sources.toggle(sourceID, to: sourceToggle.state == .on)
+    guard let sourceID = selectedSourceID else { return }
+    settings?.sources.toggle(sourceID, to: sourceToggle.state == .on)
   }
 
   @IBAction func handlingNSSliderChanges(_ sender: Any) {
-    if let slider = sender as? NSSlider {
-      settings[keyPath: sliderFields[slider]!] = slider.doubleValue
-    }
+    guard let slider = sender as? NSSlider else { return }
+    settings?[keyPath: sliderFields[slider]!] = slider.doubleValue
   }
 
   @IBAction func ok(_ sender: Any?) {
+    guard let settings = settings else { return }
     snapshot = settings.snapshot()
     settings.saveToDisk()
-    self.window?.sheetParent?.endSheet(self.window!)
+    tearDown()
   }
 
   @IBAction func cancel(_ sender: Any?) {
+    guard let settings = settings else { return }
     settings.overwrite(with: snapshot)
-    self.window?.sheetParent?.endSheet(self.window!)
+    tearDown()
   }
 
   @IBAction func restoreDefaults(_ sender: Any?) {
+    guard let settings = settings else { return }
     settings.overwrite(with: .defaults)
     if let sourceID = selectedSourceID {
       sourceToggle.state = settings.sources.contains(sourceID) ? .on : .off
@@ -286,10 +327,9 @@ extension ConfigWindowController: NSTableViewDelegate {
   }
 
   func tableViewSelectionDidChange(_ notification: Notification) {
+    guard let settings = settings else { return }
     let selectedElement = sourceSidebarElements[sourceSidebar.selectedRow]
-    guard case let .entry(sourceID, display) = selectedElement else {
-      return
-    }
+    guard case let .entry(sourceID, display) = selectedElement else { return }
 
     selectedSourceID = sourceID
     sourceToggle.state = settings.sources.contains(sourceID) ? .on : .off
@@ -301,9 +341,8 @@ extension ConfigWindowController: NSTableViewDelegate {
   }
 
   func populateIcons() async {
-    guard let sourceID = selectedSourceID else {
-      return
-    }
+    guard let sourceID = selectedSourceID else { return }
+    guard let factory = factory else { return }
 
     iconViews.forEach({ $0.icon = nil })
     let source = factory.source(for: sourceID)
@@ -315,9 +354,10 @@ extension ConfigWindowController: NSTableViewDelegate {
 }
 
 extension ConfigWindowController: NSCollectionViewDataSource {
-  func collectionView(_ collectionView: NSCollectionView, numberOfItemsInSection section: Int)
-    -> Int
-  {
+  func collectionView(
+    _ collectionView: NSCollectionView,
+    numberOfItemsInSection section: Int
+  ) -> Int {
     return iconViews.count
   }
 
@@ -329,8 +369,4 @@ extension ConfigWindowController: NSCollectionViewDataSource {
     iconView.view.isHidden = false
     return iconView
   }
-}
-
-extension ConfigWindowController: NSCollectionViewDelegate {
-
 }

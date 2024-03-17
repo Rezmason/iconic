@@ -85,7 +85,8 @@ class DeepIconSource: IconSource {
       }
 
       guard let text = String(data: data, encoding: .utf8) else {
-        print("<Invalid text>")
+        print("Iconic: invalid text in search results")
+        fileHandle.readabilityHandler = nil
         return
       }
 

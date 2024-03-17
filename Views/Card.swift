@@ -61,16 +61,22 @@ class Card: SKEffectNode {
     return point + displacement * amount
   }
 
-  func runAnimation() async {
+  func runAnimation(completion: @escaping () -> Void) {
     removeAllActions()
     alpha = 0
     let duration = Double.random(in: (context.lifespan / 2)...context.lifespan)
-    await self.run(
+    self.run(
       SKAction.group([
         makeMove(duration),
         makeRipple(duration),
         makeFade(duration),
-      ]))
+      ]),
+      completion: completion
+    )
+  }
+
+  func cancelAnimation() {
+    removeAllActions()
   }
 
   func makeMove(_ duration: Double) -> SKAction {
@@ -93,7 +99,8 @@ class Card: SKEffectNode {
     let rotationSpeed = (Bool.random() ? 1.0 : -1.0) * 4
     shape.isHidden = !isTwirling
 
-    return SKAction.customAction(withDuration: duration) { _, elapsedTime in
+    return SKAction.customAction(withDuration: duration) { [weak self] _, elapsedTime in
+      guard let self = self else { return }
       let worldPosition = simd_mix(initialPosition, finalPosition, three * elapsedTime / duration)
       let perspectiveScale = self.context.focalLength / worldPosition.z
       self.zPosition = -worldPosition.z
@@ -112,7 +119,9 @@ class Card: SKEffectNode {
   }
 
   func makeRipple(_ duration: Double) -> SKAction {
-    return SKAction.customAction(withDuration: duration) { _, elapsedTime in
+    return SKAction.customAction(withDuration: duration) { [weak self] _, elapsedTime in
+
+      guard let self = self else { return }
 
       if self.context.ripple == 0 {
         self.warpGeometry = nil

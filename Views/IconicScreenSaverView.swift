@@ -22,7 +22,6 @@ class IconicScreenSaverView: ScreenSaverView {
     let animation = AnimationView(frame: frame, settings: settings)
     self.animation = animation
     addSubview(animation)
-    animation.start()
 
     settingsObservations.append(
       settings.observe(\Settings.sources, options: .initial) { settings, _ in
@@ -30,6 +29,8 @@ class IconicScreenSaverView: ScreenSaverView {
         animation.source = self.factory.compound(of: settings.sources)
       }
     )
+
+    animation.start()
   }
 
   deinit {
@@ -38,10 +39,9 @@ class IconicScreenSaverView: ScreenSaverView {
 
   override func stopAnimation() {
     super.stopAnimation()
-    guard let animation = animation else {
-      return
-    }
-
+    settingsObservations.removeAll()
+    factory.clearSources()
+    guard let animation = animation else { return }
     animation.stop()
     animation.removeFromSuperview()
     self.animation = nil
@@ -49,10 +49,5 @@ class IconicScreenSaverView: ScreenSaverView {
 
   override var hasConfigureSheet: Bool { true }
 
-  override var configureSheet: NSWindow? {
-    if configSheet.window == nil {
-      configSheet.loadWindow()
-    }
-    return configSheet.window
-  }
+  override var configureSheet: NSWindow? { configSheet.window }
 }
