@@ -88,6 +88,7 @@ final class ConfigWindowController: NSWindowController {
   }
 
   private func tearDown() {
+    settingsObservations.forEach { $0.invalidate() }
     settingsObservations.removeAll()
 
     sourceIconCollection?.dataSource = nil

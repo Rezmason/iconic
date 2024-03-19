@@ -33,12 +33,9 @@ class IconicScreenSaverView: ScreenSaverView {
     animation.start()
   }
 
-  deinit {
-    settingsObservations.removeAll()
-  }
-
   override func stopAnimation() {
     super.stopAnimation()
+    settingsObservations.forEach { $0.invalidate() }
     settingsObservations.removeAll()
     factory.clearSources()
     guard let animation = animation else { return }

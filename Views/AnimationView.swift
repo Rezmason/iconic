@@ -92,6 +92,7 @@ class AnimationView: SKView {
   deinit {
     stop()
     presentScene(nil)
+    settingsObservations.forEach { $0.invalidate() }
     settingsObservations.removeAll()
   }
 
