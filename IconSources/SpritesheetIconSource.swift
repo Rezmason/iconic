@@ -31,8 +31,8 @@ class SpritesheetIconSource: IconSource {
     Task.detached { await self.storage.add(contentsOf: 0..<spritesheet.count) }
   }
 
-  func icon() async -> Icon? {
-    return await storage.icon()
+  func supplyIcon(notWithin iconSet: IconSet) async -> Icon? {
+    return await storage.supplyIcon(notWithin: iconSet)
   }
 
 }

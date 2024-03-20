@@ -155,8 +155,8 @@ class SpotlightIconSource: IconSource {
     }
   }
 
-  func icon() async -> Icon? {
-    return await storage.icon()
+  func supplyIcon(notWithin iconSet: IconSet) async -> Icon? {
+    return await storage.supplyIcon(notWithin: iconSet)
   }
 
   func addIconsFromFiles(in items: [NSMetadataItem]) async {

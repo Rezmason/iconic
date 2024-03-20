@@ -24,6 +24,7 @@ final class ConfigWindowController: NSWindowController {
   private weak var factory: IconFactory?
   private weak var settings: Settings?
   private let iconViews = Array(0..<60).map { _ in IconViewItem() }
+  private let iconSet = IconSet()
 
   @IBOutlet weak var animCountSlider: NSSlider!
   @IBOutlet weak var animLifespanSlider: NSSlider!
@@ -102,6 +103,7 @@ final class ConfigWindowController: NSWindowController {
     animation = nil
 
     iconViews.forEach({ $0.icon = nil })
+    iconSet.removeAll()
 
     super.window?.sheetParent?.endSheet(window!)
     super.window = nil
@@ -345,11 +347,15 @@ extension ConfigWindowController: NSTableViewDelegate {
     guard let sourceID = selectedSourceID else { return }
     guard let factory = factory else { return }
 
-    iconViews.forEach({ $0.icon = nil })
+    for iconView in iconViews {
+      iconSet.remove(iconView.icon)
+      iconView.icon = nil
+    }
     let source = factory.source(for: sourceID)
     // Not parallel, but neither are icon sources I believe
     for iconView in iconViews {
-      iconView.icon = await source?.icon()
+      iconView.icon = await source?.supplyIcon(notWithin: iconSet)
+      iconSet.add(iconView.icon)
     }
   }
 }

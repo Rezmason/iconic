@@ -20,6 +20,7 @@ class AnimationView: SKView {
   var context: AnimationContext
   let defaultSource: IconSource
   var source: IconSource
+  var iconSet = IconSet()
   var settingsObservations = [NSKeyValueObservation]()
   var settings: Settings
 
@@ -36,6 +37,7 @@ class AnimationView: SKView {
     context = AnimationContext(for: frame)
     defaultSource = PlaceholderIconSource(for: context.iconRect)
     source = defaultSource
+    iconSet = IconSet()
     iconScene = SKScene(size: frame.size)
     self.settings = settings
     super.init(frame: frame)
@@ -109,6 +111,7 @@ class AnimationView: SKView {
       card.removeFromParent()
       card.icon = nil
     }
+    iconSet.removeAll()
     source = defaultSource
   }
 
@@ -116,8 +119,12 @@ class AnimationView: SKView {
     let card = cards[index]
     card.isHidden = !running || index >= context.count
     if card.isHidden { return }
-    card.icon = await source.icon()
+    card.icon = await source.supplyIcon(notWithin: iconSet)
+    iconSet.add(card.icon)
     card.runAnimation { [weak self, weak card] in
+      if let lastIcon = card?.icon {
+        self?.iconSet.remove(lastIcon)
+      }
       card?.icon = nil
       guard let self = self else { return }
       Task {

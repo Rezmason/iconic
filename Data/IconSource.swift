@@ -7,5 +7,5 @@
 //
 
 protocol IconSource {
-  func icon() async -> Icon?
+  func supplyIcon(notWithin iconSet: IconSet) async -> Icon?
 }

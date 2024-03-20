@@ -38,8 +38,8 @@ class HFSFileTypeIconSource: IconSource {
     }
   }
 
-  func icon() async -> Icon? {
-    return await storage.icon()
+  func supplyIcon(notWithin iconSet: IconSet) async -> Icon? {
+    return await storage.supplyIcon(notWithin: iconSet)
   }
 
   private static func loadHFSCodes() -> [String: [String: HFSCode]] {

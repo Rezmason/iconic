@@ -13,14 +13,14 @@ actor CompoundIconSource: IconSource {
   private var sources: [IconSource]
   init(of sources: [IconSource]) { self.sources = sources.shuffled() }
 
-  func icon() async -> Icon? {
+  func supplyIcon(notWithin iconSet: IconSet) async -> Icon? {
     let sources = sources
     return await withTaskGroup(
       of: (Int, Icon?).self,
       body: { group -> Icon? in
         for index in 0..<sources.count {
           let source = sources[index]
-          group.addTask { return (index, await source.icon()) }
+          group.addTask { return (index, await source.supplyIcon(notWithin: iconSet)) }
         }
 
         for await (index, icon) in group.prefix(1) where icon != nil {

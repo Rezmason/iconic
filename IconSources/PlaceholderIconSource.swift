@@ -23,7 +23,7 @@ class PlaceholderIconSource: IconSource {
     image = NSImage(cgImage: texture.cgImage(), size: rect.size)
   }
 
-  func icon() async -> Icon? {
+  func supplyIcon(notWithin iconSet: IconSet) async -> Icon? {
     return Icon(image: image)
   }
 }

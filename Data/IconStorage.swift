@@ -13,33 +13,6 @@ private let blockedHashes: Set<NSString> = [
   "HUZBJBeXkGlancanpWla5PNreladrUyy61p0mp/ZLT+05FjsbOwjRoY44TDbtbweZIPtXnz3",  // generic app
 ]
 
-extension NSImage {
-  fileprivate func getHash() -> NSString? {
-
-    let hashRect = NSRect(x: 0, y: 0, width: 16, height: 16)
-    guard let rep = bestRepresentation(for: hashRect, context: nil, hints: nil) else {
-      return nil
-    }
-
-    let bitmapImageRep =
-      rep as? NSBitmapImageRep
-      ?? NSBitmapImageRep(
-        cgImage: rep.cgImage(forProposedRect: nil, context: nil, hints: nil)!
-      )
-    guard
-      let bytes = bitmapImageRep.representation(using: .jpeg, properties: [.compressionFactor: 1])
-    else {
-      return nil
-    }
-
-    let headerSize = 768  // Apparently
-    let dataSize = bytes.count - headerSize
-
-    return bytes.subdata(in: headerSize..<(headerSize + dataSize / 8)).base64EncodedString()
-      as NSString
-  }
-}
-
 actor IconStorage<Key: Hashable> {
 
   typealias IconLoader = (Key) async -> Icon?
@@ -48,16 +21,14 @@ actor IconStorage<Key: Hashable> {
 
   private enum Status {
     case unresolved
-    case invalid
     case hashed(hash: NSString)
   }
 
   private var cache: NSCache<NSString, Icon> = NSCache()
+  private var added = Set<Key>()
   private var contents = [Key: Status]()
-  private var invalidCount = 0
   private var hashes = blockedHashes
   private var awaiters = [CheckedContinuation<Void, Error>]()
-  private var bag = Bag<Key>()
   private let loader: IconLoader
 
   init(with loader: @escaping IconLoader) {
@@ -77,7 +48,8 @@ actor IconStorage<Key: Hashable> {
   }
 
   final func add(_ key: Key) async {
-    if contents[key] != nil { return }
+    if added.contains(key) { return }
+    added.insert(key)
     contents[key] = .unresolved
 
     if awaiters.isEmpty { return }
@@ -93,43 +65,59 @@ actor IconStorage<Key: Hashable> {
     cache.removeAllObjects()
   }
 
-  final func icon() async -> Icon? {
-    repeat {
-      if invalidCount == contents.count {
-        guard
-          (try? await withCheckedThrowingContinuation({ awaiters.append($0) })) != nil
-        else { return nil }
+  func supplyIcon(notWithin iconSet: IconSet) async -> Icon? {
+
+    func isExcluded(_ status: Status) -> Bool {
+      if case let .hashed(hash) = status,
+        iconSet.hashes.contains(hash)
+      {
+        return true
+      }
+      return false
+    }
+
+    // phase 1: try a few random keys
+
+    for _ in 0..<(10) {
+      if let (key, status) = contents.randomElement(),
+        !isExcluded(status),
+        let picked = await testKey(key: key)
+      {
+        return picked
+      }
+    }
+
+    // phase 2: enumerate the available candidates and try them all in random order
+
+    while true {
+      var candidates = contents.filter({ !isExcluded($0.value) })
+
+      while let (key, _) = candidates.randomElement() {
+        candidates.removeValue(forKey: key)
+        if let picked = await testKey(key: key) {
+          return picked
+        }
       }
 
-      if bag.isEmpty {
-        bag.refill(
-          from: contents.filter { (_, value) in
-            if case .invalid = value { return false }
-            return true
-          }.keys
-        )
-      }
-
-      guard let picked = await pick() else { continue }
-      return picked
-    } while true
+      guard
+        (try? await withCheckedThrowingContinuation({ awaiters.append($0) })) != nil
+      else { return nil }
+    }
   }
 
-  final private func pick() async -> Icon? {
-    guard let key = bag.pop(), let status = contents[key] else { return nil }
+  final private func testKey(key: Key?) async -> Icon? {
+    guard let key = key, let status = contents[key] else { return nil }
 
     switch status {
-    case .invalid:
-      return nil
     case .unresolved:
       guard
         let icon = await loader(key),
-        let hash = icon.image.getHash(),
-        !hashes.contains(hash)
+        !hashes.contains(icon.hash)
       else {
-        invalidate(key: key)
+        contents.removeValue(forKey: key)
         return nil
       }
+      let hash = icon.hash
       hashes.insert(hash)
       cache.setObject(icon, forKey: hash)
       contents[key] = .hashed(hash: hash)
@@ -139,16 +127,11 @@ actor IconStorage<Key: Hashable> {
         return icon
       }
       guard let icon = await loader(key) else {
-        invalidate(key: key)
+        contents.removeValue(forKey: key)
         return nil
       }
       cache.setObject(icon, forKey: hash)
       return icon
     }
-  }
-
-  final private func invalidate(key: Key) {
-    contents[key] = .invalid
-    invalidCount += 1
   }
 }

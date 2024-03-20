@@ -1,9 +1,3 @@
-thereCanBeOnlyOne
-	original screensaver prevents an icon from appearing multiple times at once
-Code review?
-	Dispatch/task/async-await/actor stuff
-	Memory stuff
-		NSCache
 v1.1
 
 README.md

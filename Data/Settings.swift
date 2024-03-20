@@ -31,7 +31,7 @@ class Settings: NSObject, Codable {
   @objc dynamic var lifespan = 0.4
   @objc dynamic var scale = 0.6
   @objc dynamic var ripple = 0.0
-  @objc dynamic var sources: Set<String> = []
+  @objc dynamic var sources = Set<String>()
 
   static let defaults = Settings(sources: [BuiltInSourceID.runningApps.rawValue])
 

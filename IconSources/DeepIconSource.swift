@@ -97,8 +97,8 @@ class DeepIconSource: IconSource {
     try? self.search.run()
   }
 
-  func icon() async -> Icon? {
-    await storage.icon()
+  func supplyIcon(notWithin iconSet: IconSet) async -> Icon? {
+    return await storage.supplyIcon(notWithin: iconSet)
   }
 
   static func systemIcons() -> DeepIconSource {

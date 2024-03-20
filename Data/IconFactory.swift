@@ -35,6 +35,8 @@ class IconFactory {
       source = SpotlightIconSource.appIcons()
     case .some(.systemInternals):
       source = DeepIconSource.systemIcons()
+    case .some(.mobileDevices):
+      source = DeepIconSource.mobileDevices()
     case .none:
       if let spritesheetDef = includedSpritesheets[id] {
         source = SpritesheetIconSource(from: spritesheetDef)
