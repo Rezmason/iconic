@@ -58,6 +58,16 @@
                         },
                         "sourceID": "builtin_system_internals"
                     }
+                },
+                {
+                    "entry": {
+                        "display": {
+                            "description": "macOS's endless renditions of mobile devices that frankly all look alike.",
+                            "name": "Pax iPhona",
+                            "symbol": "iphone"
+                        },
+                        "sourceID": "builtin_mobile_devices"
+                    }
                 }
             ],
             "name": "Deep Dives"

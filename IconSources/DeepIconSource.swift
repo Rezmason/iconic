@@ -18,7 +18,8 @@ class DeepIconSource: IconSource {
   private init(
     withMinWidth minWidth: CGFloat,
     withMinEntropy minEntropy: CGFloat,
-    findArgs: [String]
+    findArgs: [String],
+    ignoring: [String]
   ) {
     search = Process()
     self.minWidth = minWidth
@@ -51,14 +52,14 @@ class DeepIconSource: IconSource {
         : Icon(image: image)
     })
 
-    beginSearch(with: findArgs)
+    beginSearch(with: findArgs, ignoring: ignoring)
   }
 
   deinit {
     if search.isRunning { search.terminate() }
   }
 
-  func beginSearch(with args: [String]) {
+  func beginSearch(with args: [String], ignoring ignoreList: [String]) {
 
     search.executableURL = URL(fileURLWithPath: "/usr/bin/find")
     search.arguments = args
@@ -71,7 +72,9 @@ class DeepIconSource: IconSource {
 
     func addPaths() {
       let cutoff = feed.lastIndex(of: "\n") ?? feed.indices.last!
-      let lines = feed[..<cutoff].split(separator: "\n").map { String($0) }
+      let lines = feed[..<cutoff].split(separator: "\n").map { String($0) }.filter { line in
+        return ignoreList.first { line.contains($0) } == nil
+      }
       feed = String(feed[cutoff...])
       Task.detached { await self.storage.add(contentsOf: lines) }
     }
@@ -105,7 +108,20 @@ class DeepIconSource: IconSource {
     return DeepIconSource(
       withMinWidth: 128,
       withMinEntropy: 0.8,
-      findArgs: ["/System/Library", "-regex", #".*\.icns"#]
+      findArgs: ["/System/Library", "-regex", #".*\.icns"#],
+      ignoring: ["Templates", "MobileDevices"]
+    )
+  }
+
+  static func mobileDevices() -> DeepIconSource {
+    return DeepIconSource(
+      withMinWidth: 128,
+      withMinEntropy: 0.8,
+      findArgs: [
+        "/System/Library/CoreServices/CoreTypes.bundle/Contents/Library/MobileDevices.bundle",
+        "-regex", #".*\.icns"#,
+      ],
+      ignoring: []
     )
   }
 }

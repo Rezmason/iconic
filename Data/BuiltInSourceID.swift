@@ -12,4 +12,5 @@ enum BuiltInSourceID: String, CaseIterable {
   case hfs = "builtin_hfs"
   case installedApps = "builtin_installed_apps"
   case systemInternals = "builtin_system_internals"
+  case mobileDevices = "builtin_mobile_devices"
 }
