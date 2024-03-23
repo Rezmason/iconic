@@ -7,31 +7,32 @@
 //
 
 import Cocoa
+import CryptoKit
+
+private let hashRect = NSRect(x: 0, y: 0, width: 16, height: 16)
+private let hashImage = NSImage(size: hashRect.size)
 
 extension NSImage {
+
   fileprivate func getHash() -> NSString? {
 
-    let hashRect = NSRect(x: 0, y: 0, width: 16, height: 16)
-    guard let rep = bestRepresentation(for: hashRect, context: nil, hints: nil) else {
+    hashImage.lockFocus()
+    NSColor.gray.setFill()
+    hashRect.fill()
+    NSGraphicsContext.current?.shouldAntialias = false
+    NSGraphicsContext.current?.imageInterpolation = .none
+    self.draw(in: hashRect)
+    hashImage.unlockFocus()
+
+    guard let cgImage = hashImage.cgImage(forProposedRect: nil, context: nil, hints: nil) else {
       return nil
     }
+    let bitmapRep = NSBitmapImageRep(cgImage: cgImage)
+    guard let bytes = bitmapRep.representation(using: .jpeg, properties: [.compressionFactor: 1])
+    else { return nil }
 
-    let bitmapImageRep =
-      rep as? NSBitmapImageRep
-      ?? NSBitmapImageRep(
-        cgImage: rep.cgImage(forProposedRect: nil, context: nil, hints: nil)!
-      )
-    guard
-      let bytes = bitmapImageRep.representation(using: .jpeg, properties: [.compressionFactor: 1])
-    else {
-      return nil
-    }
-
-    let headerSize = 768  // Apparently
-    let dataSize = bytes.count - headerSize
-
-    return bytes.subdata(in: headerSize..<(headerSize + dataSize / 8)).base64EncodedString()
-      as NSString
+    let hashed = Insecure.MD5.hash(data: bytes).map({ String(format: "%02hhX", $0) }).joined()
+    return hashed as NSString
   }
 }
 
@@ -42,7 +43,7 @@ class Icon: Hashable {
 
   init(image: NSImage, pixelated: Bool = false) {
     self.image = image
-    hash = image.getHash() ?? ""
+    hash = image.getHash() ?? String(Int.random(in: 0..<Int.max)) as NSString
     self.pixelated = pixelated
   }
 

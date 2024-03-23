@@ -8,10 +8,7 @@
 
 import Cocoa
 
-private let blockedHashes: Set<NSString> = [
-  "rXdYV7xLCzjuoLeCB3SL/SLtzPA=",  // kernel extension
-  "HUZBJBeXkGlancanpWla5PNreladrUyy61p0mp/ZLT+05FjsbOwjRoY44TDbtbweZIPtXnz3",  // generic app
-]
+private var blockedHashes = Set<NSString>()
 
 actor IconStorage<Key: Hashable> {
 
@@ -28,13 +25,18 @@ actor IconStorage<Key: Hashable> {
   private var cache: NSCache<NSString, Icon> = NSCache()
   private var added = Set<Key>()
   private var contents = [Key: Status]()
-  private var hashes = blockedHashes
+  private var hashes = Set<NSString>()
   private var awaiters = [CheckedContinuation<Void, Error>]()
   private let loader: IconLoader
 
   init(with loader: @escaping IconLoader) {
     cache.countLimit = 100
     self.loader = loader
+
+    if blockedHashes.isEmpty {
+      blockedHashes = Set(IconStorage.loadBlockedIconHashes().values.map({ $0 as NSString }))
+    }
+    hashes = blockedHashes
   }
 
   final func add<S>(contentsOf newKeys: S) async where Key == S.Element, S: Sequence {
@@ -145,5 +147,16 @@ actor IconStorage<Key: Hashable> {
       cache.setObject(icon, forKey: hash)
       return icon
     }
+  }
+
+  static func loadBlockedIconHashes() -> [String: String] {
+    let bundle = Bundle(for: IconStorage.self)
+    guard
+      let data = NSDataAsset(name: "blocked_icon_hashes", bundle: bundle)?.data,
+      let json = try? JSONDecoder().decode([String: String].self, from: data)
+    else {
+      return [:]
+    }
+    return json
   }
 }
