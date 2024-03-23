@@ -15,21 +15,19 @@ class IconViewItem: NSCollectionViewItem {
   var spinner: NSProgressIndicator?
   var iconView: IconImageView?
 
-  var icon: Icon? {
-    didSet {
-      iconView?.icon = icon
-      if icon == nil {
-        spinner?.startAnimation(nil)
-      } else {
-        spinner?.stopAnimation(nil)
-      }
-    }
+  enum State {
+    case empty
+    case pending
+    case loaded(Icon)
+  }
+
+  var state: State = .empty {
+    didSet { updateState() }
   }
 
   override func loadView() {
     let iconImageView = self.iconView ?? IconImageView(frame: iconViewRect)
     iconImageView.autoresizingMask = [.width, .height]
-    iconImageView.icon = icon
     self.iconView = iconImageView
 
     let spinner = self.spinner ?? NSProgressIndicator(frame: iconViewRect.insetBy(dx: 16, dy: 16))
@@ -44,18 +42,43 @@ class IconViewItem: NSCollectionViewItem {
     spinner.autoresizingMask = [.width, .height]
     self.spinner = spinner
     spinner.usesThreadedAnimation = true
-    if icon == nil {
-      spinner.startAnimation(nil)
-    }
 
     let view = NSView(frame: iconViewRect)
     view.addSubview(iconImageView)
     view.addSubview(spinner)
     view.autoresizesSubviews = true
     self.view = view
+
+    updateState()
+  }
+
+  private func updateState() {
+    let icon: Icon?
+    let spinning: Bool
+
+    switch state {
+    case .empty:
+      icon = nil
+      spinning = false
+    case .pending:
+      icon = nil
+      spinning = true
+    case .loaded(let loadedIcon):
+      icon = loadedIcon
+      spinning = false
+    }
+
+    iconView?.icon = icon
+
+    if spinning {
+      spinner?.startAnimation(nil)
+    } else {
+      spinner?.stopAnimation(nil)
+    }
   }
 
   deinit {
+    self.state = .empty
     self.iconView?.icon = nil
   }
 }

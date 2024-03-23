@@ -35,6 +35,7 @@ class HFSFileTypeIconSource: IconSource {
               : nil
           })
         }).reduce([], +))
+      await self.storage.complete()
     }
   }
 

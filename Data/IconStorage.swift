@@ -24,6 +24,7 @@ actor IconStorage<Key: Hashable> {
     case hashed(hash: NSString)
   }
 
+  private(set) var completed = false
   private var cache: NSCache<NSString, Icon> = NSCache()
   private var added = Set<Key>()
   private var contents = [Key: Status]()
@@ -37,6 +38,7 @@ actor IconStorage<Key: Hashable> {
   }
 
   final func add<S>(contentsOf newKeys: S) async where Key == S.Element, S: Sequence {
+    if completed { return }
     await withTaskGroup(
       of: Void.self,
       body: { group in
@@ -48,6 +50,7 @@ actor IconStorage<Key: Hashable> {
   }
 
   final func add(_ key: Key) async {
+    if completed { return }
     if added.contains(key) { return }
     added.insert(key)
     contents[key] = .unresolved
@@ -56,6 +59,10 @@ actor IconStorage<Key: Hashable> {
     let awaiters = self.awaiters
     self.awaiters = []
     for awaiter in awaiters { awaiter.resume() }
+  }
+
+  final func complete() async {
+    completed = true
   }
 
   deinit {
@@ -99,6 +106,10 @@ actor IconStorage<Key: Hashable> {
         }
       }
 
+      if completed {
+        return nil
+      }
+
       guard
         (try? await withCheckedThrowingContinuation({ awaiters.append($0) })) != nil
       else { return nil }
@@ -110,8 +121,9 @@ actor IconStorage<Key: Hashable> {
 
     switch status {
     case .unresolved:
+      let icon = await loader(key)
       guard
-        let icon = await loader(key),
+        let icon = icon,
         !hashes.contains(icon.hash)
       else {
         contents.removeValue(forKey: key)

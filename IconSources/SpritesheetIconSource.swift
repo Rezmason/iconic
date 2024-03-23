@@ -28,7 +28,10 @@ class SpritesheetIconSource: IconSource {
       pixelated: definition.pixelated
     )
     storage = IconStorage(with: { return spritesheet.icon(at: $0) })
-    Task.detached { await self.storage.add(contentsOf: 0..<spritesheet.count) }
+    Task.detached {
+      await self.storage.add(contentsOf: 0..<spritesheet.count)
+      await self.storage.complete()
+    }
   }
 
   func supplyIcon(notWithin iconSet: IconSet) async -> Icon? {

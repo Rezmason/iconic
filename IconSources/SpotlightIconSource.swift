@@ -171,6 +171,7 @@ class SpotlightIconSource: IconSource {
         await self.storage.add(iconPath)
       }
     }
+    await self.storage.complete()
   }
 
   static func systemIcons() -> SpotlightIconSource {

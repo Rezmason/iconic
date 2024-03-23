@@ -29,7 +29,10 @@ class RunningAppsIconSource: IconSource {
       return Icon(image: image)
     })
 
-    Task.detached { await self.storage.add(contentsOf: apps.keys) }
+    Task.detached {
+      await self.storage.add(contentsOf: apps.keys)
+      await self.storage.complete()
+    }
   }
 
   func supplyIcon(notWithin iconSet: IconSet) async -> Icon? {

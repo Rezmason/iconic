@@ -22,7 +22,10 @@ class FileTypeIconSource: IconSource {
         return Icon(image: NSWorkspace.shared.icon(forFileType: $0))
       }
     })
-    Task.detached { await self.storage.add(contentsOf: FileTypeIconSource.loadContentTypes()) }
+    Task.detached {
+      await self.storage.add(contentsOf: FileTypeIconSource.loadContentTypes())
+      await self.storage.complete()
+    }
   }
 
   func supplyIcon(notWithin iconSet: IconSet) async -> Icon? {

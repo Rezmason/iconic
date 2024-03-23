@@ -23,7 +23,8 @@ final class ConfigWindowController: NSWindowController {
   private weak var animation: AnimationView?
   private weak var factory: IconFactory?
   private weak var settings: Settings?
-  private let iconViews = Array(0..<60).map { _ in IconViewItem() }
+  private var iconViews = Array(0..<60).map { _ in IconViewItem() }
+  private var numVisibleIcons = 0
   private let iconSet = IconSet()
 
   @IBOutlet weak var animCountSlider: NSSlider!
@@ -102,7 +103,7 @@ final class ConfigWindowController: NSWindowController {
     animation?.removeFromSuperview()
     animation = nil
 
-    iconViews.forEach({ $0.icon = nil })
+    iconViews.forEach({ $0.state = .empty })
     iconSet.removeAll()
 
     super.window?.sheetParent?.endSheet(window!)
@@ -136,8 +137,8 @@ final class ConfigWindowController: NSWindowController {
           )
         }).sorted(by: { entry1, entry2 in
           guard
-            case let .entry(_, display1) = entry1,
-            case let .entry(_, display2) = entry2
+            case .entry(_, let display1) = entry1,
+            case .entry(_, let display2) = entry2
           else {
             return false
           }
@@ -299,7 +300,7 @@ extension ConfigWindowController: NSTableViewDelegate {
   func tableView(_ tableView: NSTableView, viewFor tableColumn: NSTableColumn?, row: Int) -> NSView?
   {
     switch sourceSidebarElements[row] {
-    case let .group(name, _):
+    case .group(let name, _):
       let groupView =
         tableView.makeView(withIdentifier: .groupView, owner: nil) as? NSTableCellView
       if let textField = groupView?.textField {
@@ -307,7 +308,7 @@ extension ConfigWindowController: NSTableViewDelegate {
         textField.sizeToFit()
       }
       return groupView
-    case let .entry(_, display):
+    case .entry(_, let display):
       let entryView =
         tableView.makeView(withIdentifier: .entryView, owner: nil) as? NSTableCellView
       if let textField = entryView?.textField {
@@ -332,7 +333,7 @@ extension ConfigWindowController: NSTableViewDelegate {
   func tableViewSelectionDidChange(_ notification: Notification) {
     guard let settings = settings else { return }
     let selectedElement = sourceSidebarElements[sourceSidebar.selectedRow]
-    guard case let .entry(sourceID, display) = selectedElement else { return }
+    guard case .entry(let sourceID, let display) = selectedElement else { return }
 
     selectedSourceID = sourceID
     sourceToggle.state = settings.sources.contains(sourceID) ? .on : .off
@@ -348,15 +349,34 @@ extension ConfigWindowController: NSTableViewDelegate {
     guard let factory = factory else { return }
 
     for iconView in iconViews {
-      iconSet.remove(iconView.icon)
-      iconView.icon = nil
+      if case .loaded(let icon) = iconView.state {
+        iconSet.remove(icon)
+      }
+      iconView.state = .pending
     }
+
+    numVisibleIcons = iconViews.count
+    sourceIconCollection.reloadData()
+
     let source = factory.source(for: sourceID)
-    // Not parallel, but neither are icon sources I believe
+
     for iconView in iconViews {
-      iconView.icon = await source?.supplyIcon(notWithin: iconSet)
-      iconSet.add(iconView.icon)
+      let icon = await source?.supplyIcon(notWithin: iconSet)
+
+      // If the user clicks another source in the list,
+      // this procedure should immediately stop.
+      if sourceID != selectedSourceID { return }
+
+      if let icon = icon {
+        iconView.state = .loaded(icon)
+        iconSet.add(icon)
+      } else {
+        iconView.state = .empty
+        numVisibleIcons -= 1
+      }
     }
+
+    sourceIconCollection.reloadData()
   }
 }
 
@@ -365,7 +385,7 @@ extension ConfigWindowController: NSCollectionViewDataSource {
     _ collectionView: NSCollectionView,
     numberOfItemsInSection section: Int
   ) -> Int {
-    return iconViews.count
+    return numVisibleIcons
   }
 
   func collectionView(

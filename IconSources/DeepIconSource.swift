@@ -70,20 +70,25 @@ class DeepIconSource: IconSource {
     var feed = ""
     let fileHandle = stdout.fileHandleForReading
 
-    func addPaths() {
+    func addPaths(complete: Bool = false) {
       let cutoff = feed.lastIndex(of: "\n") ?? feed.indices.last!
       let lines = feed[..<cutoff].split(separator: "\n").map { String($0) }.filter { line in
         return ignoreList.first { line.contains($0) } == nil
       }
       feed = String(feed[cutoff...])
-      Task.detached { await self.storage.add(contentsOf: lines) }
+      Task.detached {
+        await self.storage.add(contentsOf: lines)
+        if complete {
+          await self.storage.complete()
+        }
+      }
     }
 
     fileHandle.readabilityHandler = { handle in
       let data = handle.availableData
       guard data.count > 0 else {
         fileHandle.readabilityHandler = nil
-        addPaths()
+        addPaths(complete: true)
         return
       }
 
