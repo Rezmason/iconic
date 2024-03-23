@@ -11,8 +11,7 @@ self hosted page
 ----------------
 
 v1.2
-	Move more data to JSON?
-		codable enums into JSON
+	Wild Eep - primate language research lexigrams
 	Kare Package - icons from the earliest system, maybe Cairo font
 	Debug mode: annotate icons
 		origin ID

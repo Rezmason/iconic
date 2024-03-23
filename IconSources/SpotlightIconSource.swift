@@ -9,9 +9,9 @@
 import Cocoa
 
 private enum SpotlightIcon: Hashable {
-  case file(atPath: String)
-  case resource(atForkPath: String)
-  case bundle(atPath: String)
+  case file(String)
+  case resource(String)
+  case bundle(String)
 }
 
 private func contentTypeFormat(_ contentTypes: [String]) -> String {
@@ -52,12 +52,12 @@ private func getIcon(forBundle bundlePath: String) -> SpotlightIcon? {
     let iconURL = contentsURL.appendingPathComponent("Resources/\(iconFilename)")
     let iconPath = iconURL.path
     if FileManager.default.fileExists(atPath: iconPath) {
-      return .file(atPath: iconPath)
+      return .file(iconPath)
     }
   } else {
     let resourceForkPath = "\(bundlePath)/..namedfork/rsrc"
     if FileManager.default.fileExists(atPath: resourceForkPath) {
-      return .resource(atForkPath: resourceForkPath)
+      return .resource(resourceForkPath)
     }
   }
 
@@ -106,7 +106,7 @@ class SpotlightIconSource: IconSource {
     predicate: NSPredicate
   ) {
     storage = IconStorage(with: { spotlightIcon in
-      var image: NSImage?
+      let image: NSImage?
       switch spotlightIcon {
       case .file(atPath: let path):
         image = NSImage(contentsOfFile: path)
@@ -117,6 +117,8 @@ class SpotlightIconSource: IconSource {
         let description = bundleIcon.description
         if !description.contains("unsupported") {
           image = bundleIcon
+        } else {
+          image = nil
         }
       }
       guard let image = image else { return nil }
@@ -166,7 +168,7 @@ class SpotlightIconSource: IconSource {
       }
       let id = URL(fileURLWithPath: itemPath).lastPathComponent
       if id.hasSuffix(".icns") {
-        await self.storage.add(.file(atPath: itemPath))
+        await self.storage.add(.file(itemPath))
       } else if let iconPath = getIcon(forBundle: itemPath) {
         await self.storage.add(iconPath)
       }

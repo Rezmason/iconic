@@ -18,7 +18,7 @@ actor IconStorage<Key: Hashable> {
 
   private enum Status {
     case unresolved
-    case hashed(hash: NSString)
+    case hashed(NSString)
   }
 
   private(set) var completed = false
@@ -77,7 +77,7 @@ actor IconStorage<Key: Hashable> {
   func supplyIcon(notWithin iconSet: IconSet) async -> Icon? {
 
     func isExcluded(_ status: Status) -> Bool {
-      if case let .hashed(hash) = status,
+      if case .hashed(let hash) = status,
         iconSet.hashes.contains(hash)
       {
         return true
@@ -134,7 +134,7 @@ actor IconStorage<Key: Hashable> {
       let hash = icon.hash
       hashes.insert(hash)
       cache.setObject(icon, forKey: hash)
-      contents[key] = .hashed(hash: hash)
+      contents[key] = .hashed(hash)
       return icon
     case .hashed(let hash):
       if let icon = cache.object(forKey: hash) {

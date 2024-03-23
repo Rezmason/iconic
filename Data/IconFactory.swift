@@ -22,7 +22,7 @@ class IconFactory {
       return source
     }
 
-    var source: IconSource?
+    let source: IconSource?
 
     switch BuiltInSourceID.init(rawValue: id) {
     case .some(.runningApps):
@@ -40,8 +40,10 @@ class IconFactory {
     case .none:
       if let spritesheetDef = includedSpritesheets[id] {
         source = SpritesheetIconSource(from: spritesheetDef)
+      } else {
+        // TODO: imported sources
+        source = nil
       }
-    // TODO: imported sources
     }
 
     sources[id] = source
