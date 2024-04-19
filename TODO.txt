@@ -13,40 +13,9 @@ self hosted page
 v1.2
 	Wild Eep - primate language research lexigrams
 	Kare Package - icons from the earliest system, maybe Cairo font
-	Debug mode: annotate icons
-		origin ID
-		icon source ID
-	Aqua style UI
-	Blur with fade?
-	Icons for packaged atlases
-		"Cheetah" (OS X): aqua folder with X on it (System?)
-		NextStep: brown folder, maybe with NeXT logo on it
-		"Sonata" (OS 9): platinum folder with 9 on it
-		Copland (OS 8)
-		System 7 (SevenDust?)
-		etc
-	App icons can be filtered/sorted by last opened date
-	Folders as icon sources
-		Plus button lets you choose a folder
-			You can also drop a folder in
-		Minus button lets you remove a selected folder
-			Disabled if no folder is selected
-	Affiliate icon source?
-
-Other icon source concepts
-	Limiting icons-in-directory to com.apple.application
-	Resource forks
-	IconFactory
-			https://freeware.iconfactory.com/icons
-			http://web.archive.org/web/20060701064119/http://www.iconfactory.com/ic_home.asp
-			Icon sets
-			iControl packs
-			Candybar packs
-	zip
-	sit
-	SF Symbols
-
-Future atlas / category ideas
+	iChat icons
+	SevenDust - System 7 icons maybe
+	NextStep (think of a name)
 	Xerox Star
 		https://github.com/livingcomputermuseum/Darkstar#331-getting-software-and-documentation
 	Lisa?
@@ -56,10 +25,20 @@ Future atlas / category ideas
 	Cairo color font glyphs
 		Start with Kid Pix stamps
 		Work out the rest with Kid Pix palette, or Apple system color palette
-	Mac OS
-		Every monochrome 32x32
-		icns8
-		icns9
-		icnsX
-		icnsXL
-		iChat icons
+
+	Debug mode: annotate icons
+		origin ID
+		icon source ID
+
+	Custom icon sources
+		Folders
+		zip, sit
+			https://freeware.iconfactory.com/icons
+		Plus button lets you choose a file/folder
+			You can also drop file in
+		Minus button lets you remove a selected set
+			Disabled if none is selected
+		"Apps only" checkbox
+
+	Aqua style UI
+	Blur with fade?
