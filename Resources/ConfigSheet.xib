@@ -143,12 +143,12 @@ Gw
                                     <rect key="frame" x="10" y="33" width="622" height="424"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <subviews>
-                                        <scrollView autohidesScrollers="YES" horizontalLineScroll="34" horizontalPageScroll="10" verticalLineScroll="34" verticalPageScroll="10" usesPredominantAxisScrolling="NO" id="lAb-82-N47">
+                                        <scrollView autohidesScrollers="YES" horizontalLineScroll="34" horizontalPageScroll="10" verticalLineScroll="34" verticalPageScroll="10" hasHorizontalScroller="NO" usesPredominantAxisScrolling="NO" id="lAb-82-N47">
                                             <rect key="frame" x="17" y="37" width="210" height="374"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" heightSizable="YES"/>
                                             <clipView key="contentView" drawsBackground="NO" id="R4t-Ud-vIn">
                                                 <rect key="frame" x="1" y="1" width="208" height="372"/>
-                                                <autoresizingMask key="autoresizingMask"/>
+                                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                 <subviews>
                                                     <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="none" columnReordering="NO" columnResizing="NO" multipleSelection="NO" emptySelection="NO" autosaveColumns="NO" rowHeight="34" rowSizeStyle="automatic" viewBased="YES" floatsGroupRows="NO" id="sJh-OJ-XL5">
                                                         <rect key="frame" x="0.0" y="0.0" width="208" height="372"/>
@@ -170,7 +170,7 @@ Gw
                                                                 <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
                                                                 <prototypeCellViews>
                                                                     <tableCellView identifier="SidebarGroupView" id="lLT-d6-f35">
-                                                                        <rect key="frame" x="18" y="0.0" width="191" height="17"/>
+                                                                        <rect key="frame" x="8" y="0.0" width="191" height="17"/>
                                                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                                         <subviews>
                                                                             <textField verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="HZj-eU-ogY">
@@ -188,7 +188,7 @@ Gw
                                                                         </connections>
                                                                     </tableCellView>
                                                                     <tableCellView identifier="SidebarEntryView" id="OeK-VI-xIL">
-                                                                        <rect key="frame" x="18" y="17" width="191" height="34"/>
+                                                                        <rect key="frame" x="8" y="17" width="191" height="34"/>
                                                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                                         <subviews>
                                                                             <imageView fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Eul-ce-lQd">
@@ -219,7 +219,7 @@ Gw
                                                 <nil key="backgroundColor"/>
                                             </clipView>
                                             <scroller key="horizontalScroller" hidden="YES" wantsLayer="YES" verticalHuggingPriority="750" horizontal="YES" id="UAy-yq-lCb">
-                                                <rect key="frame" x="1" y="357" width="208" height="16"/>
+                                                <rect key="frame" x="-100" y="-100" width="208" height="15"/>
                                                 <autoresizingMask key="autoresizingMask"/>
                                             </scroller>
                                             <scroller key="verticalScroller" hidden="YES" wantsLayer="YES" verticalHuggingPriority="750" horizontal="NO" id="61n-nb-Gpi">
@@ -254,11 +254,11 @@ Gw
                                                         <rect key="frame" x="0.0" y="0.0" width="356" height="277"/>
                                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                         <clipView key="contentView" id="ssc-8y-NR2">
-                                                            <rect key="frame" x="1" y="1" width="354" height="275"/>
-                                                            <autoresizingMask key="autoresizingMask"/>
+                                                            <rect key="frame" x="1" y="1" width="339" height="275"/>
+                                                            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                             <subviews>
                                                                 <collectionView autoresizesSubviews="NO" id="7ne-Ao-ShN">
-                                                                    <rect key="frame" x="0.0" y="0.0" width="354" height="158"/>
+                                                                    <rect key="frame" x="0.0" y="0.0" width="339" height="158"/>
                                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES"/>
                                                                     <collectionViewFlowLayout key="collectionViewLayout" minimumInteritemSpacing="10" minimumLineSpacing="10" id="37W-X1-hFP">
                                                                         <size key="itemSize" width="50" height="50"/>
@@ -636,15 +636,15 @@ Eric Peyton • Eric Kidd • Christopher Lane</string>
                                                         <rect key="frame" x="2" y="0.0" width="344" height="395"/>
                                                         <autoresizingMask key="autoresizingMask" flexibleMinX="YES" heightSizable="YES"/>
                                                         <clipView key="contentView" drawsBackground="NO" id="LFC-l9-Ke1">
-                                                            <rect key="frame" x="0.0" y="0.0" width="344" height="395"/>
+                                                            <rect key="frame" x="0.0" y="0.0" width="329" height="395"/>
                                                             <autoresizingMask key="autoresizingMask"/>
                                                             <subviews>
                                                                 <textView editable="NO" selectable="NO" importsGraphics="NO" verticallyResizable="YES" spellingCorrection="YES" smartInsertDelete="YES" id="hhf-k5-iar">
-                                                                    <rect key="frame" x="0.0" y="-10" width="344" height="909"/>
+                                                                    <rect key="frame" x="0.0" y="-10" width="329" height="925"/>
                                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                                     <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
                                                                     <color key="backgroundColor" red="0.1176470588" green="0.1176470588" blue="0.1176470588" alpha="0.0" colorSpace="custom" customColorSpace="sRGB"/>
-                                                                    <size key="minSize" width="344" height="395"/>
+                                                                    <size key="minSize" width="329" height="395"/>
                                                                     <size key="maxSize" width="613" height="10000000"/>
                                                                     <attributedString key="textStorage">
                                                                         <fragment>
@@ -819,7 +819,7 @@ Thank you for reading.
                                                             <autoresizingMask key="autoresizingMask"/>
                                                         </scroller>
                                                         <scroller key="verticalScroller" wantsLayer="YES" verticalHuggingPriority="750" controlSize="large" horizontal="NO" id="wX6-eX-a7H">
-                                                            <rect key="frame" x="328" y="0.0" width="16" height="395"/>
+                                                            <rect key="frame" x="329" y="0.0" width="15" height="395"/>
                                                             <autoresizingMask key="autoresizingMask"/>
                                                         </scroller>
                                                     </scrollView>
