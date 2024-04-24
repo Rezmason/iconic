@@ -38,6 +38,8 @@ final class ConfigWindowController: NSWindowController {
   @IBOutlet weak var sourceDescription: NSTextField!
   @IBOutlet weak var sourceIconCollection: NSCollectionView!
 
+  @IBOutlet weak var buildInfoLabel: NSTextField!
+
   private var sourceSidebarElements = [SidebarElement]()
 
   init(factory: IconFactory, settings: Settings) {
@@ -82,6 +84,13 @@ final class ConfigWindowController: NSWindowController {
     else {
       fatalError("Config sheet must be initialized with settings and factory objects.")
     }
+
+    let bundle = Bundle(for: ConfigWindowController.self)
+    let appVersionString =
+      bundle.object(forInfoDictionaryKey: "CFBundleShortVersionString") as! String
+    let buildNumber = bundle.object(forInfoDictionaryKey: "CFBundleVersion") as! String
+    buildInfoLabel.stringValue = "\(appVersionString) (\(buildNumber))"
+
     snapshot = settings.snapshot()
     buildIconSourceCollection()
     buildIconSourceSidebarElements(withFactory: factory)

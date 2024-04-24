@@ -13,6 +13,7 @@
                 <outlet property="animRippleSlider" destination="sjF-T2-R4G" id="pDz-fJ-TRx"/>
                 <outlet property="animScaleSlider" destination="qWm-qi-SCi" id="pWy-P9-zAl"/>
                 <outlet property="animationDemo" destination="4Ki-G3-cp4" id="iLE-PW-Kh9"/>
+                <outlet property="buildInfoLabel" destination="1LD-l8-gU9" id="d8Y-Qd-8td"/>
                 <outlet property="sourceDescription" destination="zZT-zJ-o6C" id="j9I-AF-CQL"/>
                 <outlet property="sourceIconCollection" destination="7ne-Ao-ShN" id="Htz-DD-sWo"/>
                 <outlet property="sourceSidebar" destination="sJh-OJ-XL5" id="tcl-cV-XDS"/>
@@ -148,7 +149,7 @@ Gw
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" heightSizable="YES"/>
                                             <clipView key="contentView" drawsBackground="NO" id="R4t-Ud-vIn">
                                                 <rect key="frame" x="1" y="1" width="208" height="372"/>
-                                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                                <autoresizingMask key="autoresizingMask"/>
                                                 <subviews>
                                                     <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="none" columnReordering="NO" columnResizing="NO" multipleSelection="NO" emptySelection="NO" autosaveColumns="NO" rowHeight="34" rowSizeStyle="automatic" viewBased="YES" floatsGroupRows="NO" id="sJh-OJ-XL5">
                                                         <rect key="frame" x="0.0" y="0.0" width="208" height="372"/>
@@ -170,7 +171,7 @@ Gw
                                                                 <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
                                                                 <prototypeCellViews>
                                                                     <tableCellView identifier="SidebarGroupView" id="lLT-d6-f35">
-                                                                        <rect key="frame" x="8" y="0.0" width="191" height="17"/>
+                                                                        <rect key="frame" x="18" y="0.0" width="191" height="17"/>
                                                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                                         <subviews>
                                                                             <textField verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="HZj-eU-ogY">
@@ -188,7 +189,7 @@ Gw
                                                                         </connections>
                                                                     </tableCellView>
                                                                     <tableCellView identifier="SidebarEntryView" id="OeK-VI-xIL">
-                                                                        <rect key="frame" x="8" y="17" width="191" height="34"/>
+                                                                        <rect key="frame" x="18" y="17" width="191" height="34"/>
                                                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                                         <subviews>
                                                                             <imageView fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Eul-ce-lQd">
@@ -255,7 +256,7 @@ Gw
                                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                         <clipView key="contentView" id="ssc-8y-NR2">
                                                             <rect key="frame" x="1" y="1" width="339" height="275"/>
-                                                            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                                            <autoresizingMask key="autoresizingMask"/>
                                                             <subviews>
                                                                 <collectionView autoresizesSubviews="NO" id="7ne-Ao-ShN">
                                                                     <rect key="frame" x="0.0" y="0.0" width="339" height="158"/>
@@ -305,7 +306,7 @@ Gw
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" heightSizable="YES"/>
                                             <clipView key="contentView" drawsBackground="NO" id="tIb-1s-KOW">
                                                 <rect key="frame" x="0.0" y="0.0" width="251" height="198"/>
-                                                <autoresizingMask key="autoresizingMask"/>
+                                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                 <subviews>
                                                     <textView editable="NO" importsGraphics="NO" verticallyResizable="YES" spellingCorrection="YES" smartInsertDelete="YES" id="kfQ-OG-KjX">
                                                         <rect key="frame" x="0.0" y="0.0" width="251" height="198"/>
@@ -458,9 +459,8 @@ by </string>
                                                                 </attributes>
                                                             </fragment>
                                                             <fragment>
-                                                                <string key="content">, december 2023
-
-
+                                                                <string key="content" base64-UTF8="YES">
+CgoKA
 </string>
                                                                 <attributes>
                                                                     <color key="NSColor" name="textColor" catalog="System" colorSpace="catalog"/>
@@ -637,7 +637,7 @@ Eric Peyton • Eric Kidd • Christopher Lane</string>
                                                         <autoresizingMask key="autoresizingMask" flexibleMinX="YES" heightSizable="YES"/>
                                                         <clipView key="contentView" drawsBackground="NO" id="LFC-l9-Ke1">
                                                             <rect key="frame" x="0.0" y="0.0" width="329" height="395"/>
-                                                            <autoresizingMask key="autoresizingMask"/>
+                                                            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                             <subviews>
                                                                 <textView editable="NO" selectable="NO" importsGraphics="NO" verticallyResizable="YES" spellingCorrection="YES" smartInsertDelete="YES" id="hhf-k5-iar">
                                                                     <rect key="frame" x="0.0" y="-10" width="329" height="925"/>
@@ -827,6 +827,15 @@ Thank you for reading.
                                             </view>
                                             <color key="fillColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                         </box>
+                                        <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" textCompletion="NO" translatesAutoresizingMaskIntoConstraints="NO" id="1LD-l8-gU9">
+                                            <rect key="frame" x="-2" y="-3" width="238" height="16"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                            <textFieldCell key="cell" lineBreakMode="clipping" selectable="YES" alignment="left" title="version and build" usesSingleLineMode="YES" id="7s9-pM-ipO">
+                                                <font key="font" size="10" name="LucidaGrande"/>
+                                                <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                                <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                            </textFieldCell>
+                                        </textField>
                                     </subviews>
                                 </view>
                             </tabViewItem>
