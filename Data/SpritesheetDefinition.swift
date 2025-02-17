@@ -9,6 +9,7 @@
 struct SpritesheetDefinition: Codable {
   let assetName: String
   let iconSize: UInt
+  let count: UInt
   let pixelated: Bool
   let display: IconSourceDisplay
 }

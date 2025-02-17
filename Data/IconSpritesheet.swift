@@ -17,7 +17,7 @@ struct IconSpritesheet {
   let pixelated: Bool
   private(set) var iconWidth: UInt
 
-  init(image: NSImage, iconWidth: UInt, pixelated: Bool) {
+  init(image: NSImage, iconWidth: UInt, count: UInt, pixelated: Bool) {
     self.image = image
     self.iconWidth = iconWidth
     self.pixelated = pixelated
@@ -26,7 +26,7 @@ struct IconSpritesheet {
 
     numRows = UInt(image.size.height / width)
     numColumns = UInt(image.size.width / width)
-    count = numRows * numColumns
+    self.count = min(count, numRows * numColumns)
   }
 
   func icon(at index: UInt) -> Icon {

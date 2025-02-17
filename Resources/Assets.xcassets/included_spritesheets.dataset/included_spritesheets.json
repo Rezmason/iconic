@@ -3,6 +3,7 @@
   {
     "assetName": "aequa",
     "iconSize": 128,
+    "count": 64,
     "pixelated": false,
     "display": {
       "name": "Aequa Icons",
@@ -14,6 +15,7 @@
   {
     "assetName": "eden-light",
     "iconSize": 200,
+    "count": 16,
     "pixelated": false,
     "display": {
       "name": "Fruits of Eden",
@@ -25,11 +27,24 @@
   {
     "assetName": "wabi-sabi",
     "iconSize": 32,
+    "count": 35,
     "pixelated": true,
     "display": {
       "name": "Wabi-Sabi",
       "description": "Icons from the last known secret about box Apple ever shipped.",
       "symbol": "person.3"
+    }
+  },
+  "wild-eep":
+  {
+    "assetName": "wild-eep",
+    "iconSize": 256,
+    "count": 146,
+    "pixelated": false,
+    "display": {
+      "name": "Wild Eep",
+      "description": "Lexigrams designed and used in the 1970s by Ernst von Glasersfeld and Lana the chimpanzee for inter-primate communication.",
+      "symbol": "wild.eep"
     }
   }
 }

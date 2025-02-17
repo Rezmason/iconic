@@ -25,6 +25,7 @@ class SpritesheetIconSource: IconSource {
     let spritesheet = IconSpritesheet(
       image: image,
       iconWidth: definition.iconSize,
+      count: definition.count,
       pixelated: definition.pixelated
     )
     storage = IconStorage(with: { return spritesheet.icon(at: $0) })

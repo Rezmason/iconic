@@ -325,7 +325,14 @@ extension ConfigWindowController: NSTableViewDelegate {
         textField.sizeToFit()
       }
       if #available(macOS 11.0, *), let imageView = entryView?.imageView {
-        imageView.image = NSImage(systemSymbolName: display.symbol, accessibilityDescription: nil)
+        if let symbolImage = NSImage(systemSymbolName: display.symbol, accessibilityDescription: nil) {
+          imageView.image = symbolImage
+        } else if let customImage = Bundle(for: ConfigWindowController.self).image(
+          forResource: NSImage.Name(display.symbol)){
+          imageView.image = customImage
+        } else {
+          imageView.image = nil
+        }
       }
       return entryView
     }
